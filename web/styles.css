@@ -24,7 +24,7 @@ button { font: inherit; }
   flex-direction: column;
   min-height: 100dvh;
   overflow: hidden;
-  background: #171716 var(--scene-image) center / cover no-repeat;
+  background: #171716 var(--scene-image) center top / cover no-repeat;
 }
 
 .story::before {
@@ -81,7 +81,7 @@ button { font: inherit; }
   transition: background .16s ease, padding-left .16s ease;
 }
 .choice:hover, .choice:focus-visible { padding-left: 1rem; background: rgba(255,255,255,.1); outline: none; }
-.choice::before { content: "â€”"; display: inline-block; width: 1.3rem; color: rgba(255,255,255,.68); }
+.choice::before { content: "\\2014"; display: inline-block; width: 1.3rem; color: rgba(255,255,255,.68); }
 .choice:disabled { cursor: not-allowed; opacity: .45; }
 .choice em { color: var(--muted); font-size: .85em; }
 
