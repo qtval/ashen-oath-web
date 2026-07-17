@@ -36,34 +36,32 @@ function render() {
   if (!node) return renderError("The story could not find its next scene.");
 
   const ending = Boolean(node.ending);
+  const artPath = node.panel_image || "assets/panels/checkpoint-rain-v1.png";
   const choices = (node.choices || []).map((choice, index) => {
     const available = canChoose(choice);
     return `<button class="choice" data-choice="${index}" type="button" ${available ? "" : "disabled"}>${choice.text}${available ? "" : " <em>(not available)</em>"}</button>`;
   }).join("");
 
   app.innerHTML = `
-    <header class="topbar">
-      <div>
+    <section id="story" class="story" tabindex="-1" style="--scene-image: url('${artPath}')">
+      <div class="scene-shade" aria-hidden="true"></div>
+      <header class="topbar">
         <p class="eyebrow">The Ashen Oath &middot; Chapter One</p>
-        <h1>${chapter.chapter}</h1>
+        <nav class="utility" aria-label="Game controls">
+          <button id="save" type="button">Save</button>
+          <button id="restart" type="button">Restart</button>
+        </nav>
+      </header>
+      <div class="story-content">
+        <article class="dialogue">
+          <p class="speaker">${node.speaker || "Narration"}</p>
+          <p class="text">${node.text}</p>
+        </article>
+        ${ending
+          ? `<section class="ending" aria-label="Ending"><h1>${node.ending}</h1><p>The road continues, but this chapter ends here.</p><button class="restart" id="ending-restart" type="button">Begin again</button></section>`
+          : `<div class="choices" role="group" aria-label="Choices">${choices}</div>`}
       </div>
-      <nav class="utility" aria-label="Game controls">
-        <button id="save" type="button">Save</button>
-        <button id="restart" type="button">Restart</button>
-      </nav>
-    </header>
-    <section id="story" class="story" tabindex="-1">
-      <article class="environment" aria-label="Environment panel">
-        <p class="panel-caption">${node.panel_description || "The road waits beneath a colourless sky."}</p>
-      </article>
-      <article class="dialogue">
-        <p class="speaker">${node.speaker || "Narration"}</p>
-        <p class="text">${node.text}</p>
-      </article>
-      ${ending
-        ? `<section class="ending" aria-label="Ending"><h2>${node.ending}</h2><p>The road continues, but this chapter ends here.</p><button class="restart" id="ending-restart" type="button">Begin again</button></section>`
-        : `<div class="choices" role="group" aria-label="Choices">${choices}</div>`}
-      <footer class="footer"><span>Decision ${state.history.length + 1}</span><span>Choices save automatically on this device.</span></footer>
+      <footer class="footer"><span>${chapter.chapter}</span><span>Decision ${state.history.length + 1}</span></footer>
     </section>`;
 
   document.querySelector("#save")?.addEventListener("click", () => {
