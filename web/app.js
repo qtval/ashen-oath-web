@@ -36,7 +36,8 @@ function render() {
   if (!node) return renderError("The story could not find its next scene.");
 
   const ending = Boolean(node.ending);
-  const artPath = node.panel_image || "assets/panels/checkpoint-rain-v1.png";
+  // CSS resolves image URLs relative to web/styles.css, hence the parent path.
+  const artPath = node.panel_image || "../assets/panels/checkpoint-rain-v1.png";
   const choices = (node.choices || []).map((choice, index) => {
     const available = canChoose(choice);
     return `<button class="choice" data-choice="${index}" type="button" ${available ? "" : "disabled"}>${choice.text}${available ? "" : " <em>(not available)</em>"}</button>`;
