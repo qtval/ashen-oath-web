@@ -13,7 +13,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Check text encoding
+        run: node scripts/check-text-encoding.mjs
       - name: Validate chapter links
         run: |
           node -e "const fs=require('fs'); const c=JSON.parse(fs.readFileSync('data/chapters/chapter_01.json')); const ids=new Set(c.nodes.map(n=>n.id)); const bad=c.nodes.flatMap(n=>(n.choices||[]).filter(x=>!ids.has(x.next)).map(x=>n.id+' -> '+x.next)); if(bad.length) throw new Error('Broken links: '+bad.join(', ')); console.log('Story validation passed: '+c.nodes.length+' nodes.');"
-
