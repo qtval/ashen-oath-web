@@ -2,7 +2,7 @@
 
 **Status:** Implementation-ready design draft for the Chapter One rewrite
 
-**Scope:** 18 purposeful scenes, including four endings
+**Scope:** 19 purposeful scenes, including four endings
 
 **Target first-play time:** 20-30 minutes
 
@@ -114,6 +114,7 @@ The machine-readable vocabulary, allowed values, legacy migration keys, and reco
 | `sella_tip_known` | Scene 10 | Lets Garren forgive, leverage, or expose Sella; changes Tavin's reaction at reconvergence. |
 | Evidence custody states | Scenes 7-12 | Determine ending availability, the credibility of the surviving case, and who can be traced. |
 | `public_method` (`restraint`, `deception`, or `coercion`) | Scenes 4, 6, 9 | Changes how the crowd and principal cast interpret Garren during Scene 13. |
+| `march_families_warned` | Scene 6A | Changes how the Bracken families meet the clearing order and what their escape or detention spreads beyond the gate. |
 | `evidence_distribution` | Scene 12 | Ensures no ending can silently consolidate evidence that the player deliberately split or surrendered. |
 | `civilian_cost` | Scene 13 | Appears in every ending; the checkpoint crisis cannot vanish when the branch resolves. |
 
@@ -121,7 +122,7 @@ Every major state must change at least two later moments. A state that changes o
 
 ## Route shape and timing
 
-Each completed route contains 12-13 scenes, including an ending. Scenes 7-12 contain multiple dialogue turns and should carry most of the investigative playtime.
+Each completed route contains 13-14 scenes, including an ending. Scenes 7-12 contain multiple dialogue turns and should carry most of the investigative playtime.
 
 ```mermaid
 flowchart TD
@@ -131,7 +132,8 @@ flowchart TD
     S03 --> S04["04 Captain at the First Gate"]
     S04 --> S05["05 Wheel in the Mud"]
     S05 --> S06["06 Bell and Bar"]
-    S06 --> S07["07 The Search Table"]
+    S06 --> S06A["06A Names for the Truce"]
+    S06A --> S07["07 The Search Table"]
     S07 -->|records route| S08["08 The Crossed-Out Dead"]
     S08 --> S09["09 Twelve Minutes"]
     S07 -->|witness route| S09
@@ -222,9 +224,21 @@ flowchart TD
 - **Choice or pressure:** Use the culvert knowledge, track the clerk's records, calm the crowd, or create a deception around the wagon. Options depend on `approach_intel` and prior method.
 - **Immediate consequence:** Establishes the access Garren will use at the search table and may increase `civilian_pressure`. Earlier Tavin and Sella states change who helps or obstructs him.
 - **Delayed consequence:** The crowd remembers restraint, deception, or coercion. Meret later has either space to defy her superior or a courtyard already primed to panic.
-- **Destination:** All branches reconverge at Scene 7.
+- **Destination:** All branches reconverge at Scene 6A.
 - **Environmental panel:** Gate slammed shut, bell rope cut short, refugees compressed among wagons while soldiers close a ring; rain and palisade dominate the figures.
 - **Garren revealed:** He applies crowd-control instincts and sees how easily care for people becomes management of people.
+
+### 06A - `ch01_names_for_the_truce` - Reprisal roll beneath the inner gate
+
+- **Dramatic purpose:** Make the threatened renewed war and its first civilian victims concrete before Garren chooses how to investigate the evidence.
+- **Characters and wants:** Meret wants to delay a reprisal without openly refusing it. The Bracken families want to know why soldiers are sorting them by village. The Chancellor's courier wants the list operational before Red Hollow can become public. Garren wants time without accepting that silence also chooses victims.
+- **Revealed or concealed:** The Chancellor's peace blamed the Bracken lords for Red Hollow. Orl's countermand would expose that story as a Crown lie and let those lords void the truce; their levies are one day west. The reprisal roll turns Bracken refugees inside Crown territory into ready hostages.
+- **Choice or pressure:** Give Meret the list and make her delay the sorting, or warn the named families before soldiers can mark them.
+- **Immediate consequence:** Quiet delay raises Meret's trust and lowers crowd pressure but leaves the families grouped for later seizure. Warning them raises Sella's trust and crowd pressure while giving the families a chance to move.
+- **Delayed consequence:** The checkpoint crisis and its immediate aftermath remember whether the families were warned. Their detention, flight, or rumor can help keep the truce quiet or carry the accusation toward the Bracken levies.
+- **Destination:** Both choices continue to Scene 7.
+- **Environmental panel:** Fresh reprisal roll pinned over a rain-bleached truce notice beneath the inner gate; soldiers divide hooded refugee families by village marks while severe timber and weather dominate the composition.
+- **Garren revealed:** He learns that withholding dangerous truth is already an action with named bodies attached to it.
 
 ### 07 - `ch01_search_table` - Scarred table under the main awning
 

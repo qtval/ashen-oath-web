@@ -67,6 +67,8 @@ The project question asks whether truth is worth protecting if disclosure begins
 
 **Required correction:** add at least one purposeful world-pressure beat before evidence distribution. It should identify the human group or political actor likely to answer disclosure with violence, without turning the story into a lore lecture.
 
+**Resolved:** A reprisal courier now brings a village list before the investigation begins. The scene establishes that the Chancellor's peace depends on blaming the Bracken lords for Red Hollow, that their levies can void the truce and mobilize within a day, and that Bracken refugee families inside the checkpoint are already being sorted as hostages. Garren's choice to delay the sorting or warn the families returns in the clearing crisis and its immediate aftermath.
+
 #### 3. The 20-30 minute target is not met
 
 Current routes contain about 900 displayed words and 10-12 multi-option decisions. Reaching the target will likely require several additional situation changes and roughly two to three times the present playable substance, subject to human timing.
@@ -146,10 +148,10 @@ Meret's guilt, self-deception, and institutional compromise land well. The clerk
 
 ## Panel readiness
 
-- Distinct panel briefs: 40
+- Distinct panel briefs: 41
 - Explicit final panel images: 0
 - Current image treatment: one shared atmospheric placeholder
-- Shot-list readiness: blocked by the remaining P0 pacing/world-pressure work and P1 story corrections
+- Shot-list readiness: blocked by the remaining P0 pacing work and P1 story corrections
 
 Do not commission or generate the complete panel set yet. Pacing expansion and conditional crisis/open-gate variants may add, remove, or split situations. After those are locked, convert every surviving node and material state variant into the permanent shot list requested by the project owner.
 
@@ -159,6 +161,6 @@ Milestone 0.3 is **not yet accepted** despite the complete beat-sheet implementa
 
 ## Exact next task
 
-**Add one purposeful world-pressure beat before evidence distribution.**
+**Add one purposeful scene confronting Garren with the human cost of his former interrogation work.**
 
-Keep the task narrow: identify who benefits from the official Red Hollow story, who could answer disclosure with violence, and why the refugees at this checkpoint would pay first. Deliver the pressure through a concrete situation, order, or human need rather than a lore lecture. Give the new situation its own environmental panel brief; do not produce final art yet.
+Place it before the investigation window so it deepens Chapter One's pacing and Garren's arc rather than padding a route. A refugee or veteran should recognize what Garren did during the war and need something from him now. The choice must alter later cooperation, access, or civilian pressure, receive its own environmental panel brief, and avoid expanding unrelated dialogue or producing final art.

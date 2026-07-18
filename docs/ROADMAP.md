@@ -67,6 +67,7 @@ Completed so far:
 - [x] Replace the temporary endpoints with branch-sensitive beat-sheet Scenes 15-18
 - [x] Run the timed Chapter One route and continuity audit ([audit](CHAPTER_01_AUDIT.md))
 - [x] Repair Tavin's physical continuity and ending access across testimony, crisis, and chapel branches
+- [x] Dramatize the renewed-war pressure and why the checkpoint refugees would pay first
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 
@@ -183,6 +184,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Add one purposeful world-pressure beat before evidence distribution.**
+**Add one purposeful scene confronting Garren with the human cost of his former interrogation work.**
 
-Identify who benefits from the official Red Hollow story, who could answer disclosure with violence, and why the refugees at this checkpoint would pay first. Deliver the pressure through a concrete situation, order, or human need rather than a lore lecture. Give the new situation its own environmental panel brief, but do not produce final art yet.
+Place it before the investigation window so it deepens Chapter One's pacing and Garren's arc rather than padding a route. A refugee or veteran should recognize what Garren did during the war and need something from him now. The choice must alter later cooperation, access, or civilian pressure, receive its own environmental panel brief, and avoid expanding unrelated dialogue or producing final art.

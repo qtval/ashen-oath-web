@@ -99,6 +99,10 @@
       "operation": "increment",
       "description": "Accumulated checkpoint instability before the order to clear the road."
     },
+    "march_families_warned": {
+      "type": "boolean",
+      "description": "Whether Garren publicly warned the Bracken families that the Crown's reprisal roll names them as the first hostages of a renewed war."
+    },
     "civilian_cost": {
       "type": "enum",
       "values": ["none", "refugees_detained", "refugees_injured", "soldier_refusal", "wagon_seized", "gate_riot"],
@@ -260,6 +264,7 @@
         "ration_folio_status",
         "courier_strap_status",
         "search_warrant_status",
+        "march_families_warned",
         "meret_trust",
         "tavin_trust",
         "sella_trust"
@@ -282,6 +287,7 @@
         "sella_tip_known",
         "public_method",
         "evidence_distribution",
+        "march_families_warned",
         "civilian_pressure",
         "civilian_cost"
       ],
@@ -303,6 +309,7 @@
         "courier_strap_status",
         "search_warrant_status",
         "evidence_distribution",
+        "march_families_warned",
         "civilian_cost"
       ],
       "description": "Ending availability and cost must use the people, proof, promises, and public harm that survived Scene 13; no branch may silently restore access or evidence."

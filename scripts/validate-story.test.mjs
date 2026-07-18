@@ -54,13 +54,24 @@ async function loadChapterOne() {
   return { chapter, stateSchema };
 }
 
-function statesArrivingAt(chapter, targetNodeId) {
+function statesArrivingAt(chapter, targetNodeId, options = {}) {
   const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
   const queue = [{ nodeId: chapter.nodes[0].id, values: {} }];
   const arrivals = [];
+  const visited = new Set();
+  let queueIndex = 0;
 
-  while (queue.length > 0) {
-    const current = queue.shift();
+  while (queueIndex < queue.length) {
+    const current = queue[queueIndex];
+    queueIndex += 1;
+    if (options.deduplicate) {
+      const orderedValues = Object.fromEntries(
+        Object.entries(current.values).sort(([left], [right]) => left.localeCompare(right)),
+      );
+      const signature = JSON.stringify([current.nodeId, orderedValues]);
+      if (visited.has(signature)) continue;
+      visited.add(signature);
+    }
     if (current.nodeId === targetNodeId) {
       arrivals.push(current.values);
       continue;
@@ -411,6 +422,26 @@ test("Chapter One opening preserves every lockdown invariant across all branches
   );
 });
 
+test("Chapter One makes the renewed-war pressure concrete before investigation", async () => {
+  const { chapter } = await loadChapterOne();
+  const lockdown = chapter.nodes.find(({ id }) => id === "ch01_bell_and_bar");
+  const pressureBeat = chapter.nodes.find(({ id }) => id === "ch01_names_for_the_truce");
+
+  assert(lockdown, "The lockdown scene must exist.");
+  assert(pressureBeat, "The world-pressure scene must exist.");
+  assert(lockdown.choices.every(({ next }) => next === pressureBeat.id));
+  assert.match(pressureBeat.text, /Chancellor/);
+  assert.match(pressureBeat.text, /Bracken families/);
+  assert.match(pressureBeat.text, /levies are a day west/);
+  assert.match(pressureBeat.text, /hostages/);
+  assert.match(pressureBeat.panel_description, /reprisal roll/);
+  assert.deepEqual(
+    new Set(pressureBeat.choices.map(({ effects }) => effects.march_families_warned)),
+    new Set([false, true]),
+  );
+  assert(pressureBeat.choices.every(({ next }) => next === "ch01_search_table"));
+});
+
 test("Chapter One investigation routes preserve exact evidence gaps at assembly", async () => {
   const { chapter, stateSchema } = await loadChapterOne();
   const assemblyInvariant = stateSchema.reconvergence_invariants.find(
@@ -419,7 +450,7 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
   const assemblyArrivals = statesArrivingAt(chapter, "ch01_three_hands");
 
   assert(assemblyInvariant, "The evidence-assembly invariant must remain declared.");
-  assert.equal(assemblyArrivals.length, 29025);
+  assert.equal(assemblyArrivals.length, 58050);
   assert.deepEqual(
     new Set(assemblyArrivals.map(({ investigation_route: value }) => value)),
     new Set(["records", "witness", "merchant", "authority"]),
@@ -494,7 +525,7 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
   const crisisArrivals = statesArrivingAt(chapter, "ch01_clear_the_road");
 
   assert(crisisInvariant, "The checkpoint-crisis invariant must remain declared.");
-  assert.equal(crisisArrivals.length, 29025);
+  assert.equal(crisisArrivals.length, 58050);
   assert.deepEqual(
     new Set(crisisArrivals.map(({ evidence_distribution: value }) => value)),
     new Set(["consolidated_meret", "consolidated_tavin", "consolidated_sella", "split", "decoy"]),
@@ -525,9 +556,28 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
       values.approach_intel === "ditch" && values.tavin_can_leave === true,
     );
     const positionFragments = crisisNode.conditional_text.filter(
-      (fragment) => choiceIsAvailable(fragment, values),
+      (fragment) => fragment.group === "tavin_position" && choiceIsAvailable(fragment, values),
     );
     assert.equal(positionFragments.length, 1, `Crisis needs one ${values.tavin_status} position beat.`);
+    const pressureFragments = crisisNode.conditional_text.filter(
+      (fragment) => fragment.group === "reprisal_pressure" && choiceIsAvailable(fragment, values),
+    );
+    assert.equal(pressureFragments.length, 1, "Crisis must remember whether the families were warned.");
+  }
+
+  for (const outcomeId of [
+    "ch01_clear_the_road_meret",
+    "ch01_clear_the_road_tavin",
+    "ch01_clear_the_road_sella",
+    "ch01_clear_the_road_warrant",
+  ]) {
+    const outcomeNode = chapter.nodes.find(({ id }) => id === outcomeId);
+    for (const march_families_warned of [false, true]) {
+      const aftermathFragments = outcomeNode.conditional_text.filter(
+        (fragment) => choiceIsAvailable(fragment, { march_families_warned }),
+      );
+      assert.equal(aftermathFragments.length, 1, `${outcomeId} needs one reprisal aftermath.`);
+    }
   }
 });
 
@@ -537,7 +587,7 @@ test("Chapter One final oath gates custodians without removing the fire ending",
     ({ scene }) => scene === "ch01_open_gate_oath",
   );
   const oathNode = chapter.nodes.find(({ id }) => id === "ch01_open_gate_oath");
-  const oathArrivals = statesArrivingAt(chapter, "ch01_open_gate_oath");
+  const oathArrivals = statesArrivingAt(chapter, "ch01_open_gate_oath", { deduplicate: true });
   const tavinEndingChoice = oathNode.choices.find(
     ({ next }) => next === "ch01_ending_debt_in_rain",
   );
