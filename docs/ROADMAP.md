@@ -66,7 +66,7 @@ Completed so far:
 - [x] Implement beat-sheet Scenes 12-14: evidence distribution, checkpoint crisis, and the open-gate ending choice
 - [x] Replace the temporary endpoints with branch-sensitive beat-sheet Scenes 15-18
 - [x] Run the timed Chapter One route and continuity audit ([audit](CHAPTER_01_AUDIT.md))
-- [ ] Repair Tavin's physical continuity and ending access across testimony, crisis, and chapel branches
+- [x] Repair Tavin's physical continuity and ending access across testimony, crisis, and chapel branches
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 
@@ -183,6 +183,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Repair Tavin's physical continuity and ending access.**
+**Add one purposeful world-pressure beat before evidence distribution.**
 
-Add authored recovery, transfer, release, or absence variants from Tavin's opening status through testimony, evidence custody, the checkpoint crisis, and the chapel ending. Proof custody alone must not restore an unavailable Tavin. Validate every opening status without expanding unrelated dialogue or producing final panels.
+Identify who benefits from the official Red Hollow story, who could answer disclosure with violence, and why the refugees at this checkpoint would pay first. Deliver the pressure through a concrete situation, order, or human need rather than a lore lecture. Give the new situation its own environmental panel brief, but do not produce final art yet.

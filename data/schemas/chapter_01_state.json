@@ -17,6 +17,10 @@
       "values": ["hidden", "captured", "abandoned", "bargaining", "escaped", "missing", "protected"],
       "description": "Tavin's physical availability and custody without asserting an off-page death."
     },
+    "tavin_can_leave": {
+      "type": "boolean",
+      "description": "Whether Tavin has an authored way to leave the checkpoint with Garren; testimony or proof custody alone cannot grant it."
+    },
     "tavin_trust": {
       "type": "number",
       "operation": "increment",
@@ -234,6 +238,7 @@
       "preserve": [
         "approach_intel",
         "tavin_status",
+        "tavin_can_leave",
         "tavin_trust",
         "tavin_fear",
         "meret_trust",
@@ -266,6 +271,7 @@
       "scene": "ch01_clear_the_road",
       "preserve": [
         "tavin_status",
+        "tavin_can_leave",
         "tavin_trust",
         "tavin_fear",
         "meret_trust",
@@ -286,6 +292,7 @@
       "scene": "ch01_open_gate_oath",
       "preserve": [
         "tavin_status",
+        "tavin_can_leave",
         "tavin_trust",
         "meret_trust",
         "meret_suspicion",

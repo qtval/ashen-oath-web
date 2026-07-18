@@ -59,6 +59,8 @@ Related cases:
 
 **Required correction:** author explicit recovery, transfer, release, or absence variants. Gate testimony, evidence handoff, culvert escape, and chapel access using both proof custody and Tavin's physical state. No branch may restore him off-page.
 
+**Resolved:** Chapter One now preserves a separate authored escape-access state. Captured, hidden, bargaining, and abandoned routes receive distinct testimony/contact text; unavailable Tavin routes cannot take the witness investigation, receive proof, use the culvert, or reach the chapel. Formal custody is the explicit transfer that can move a captured or returned Tavin into protection.
+
 #### 2. The political consequence of the truth is not dramatized
 
 The project question asks whether truth is worth protecting if disclosure begins another war, but the playable chapter never makes the threatened war concrete. The player learns that Red Hollow was arranged, not who benefits from the official story, who would mobilize after disclosure, or why the refugees and checkpoint are politically connected to that danger.
@@ -147,9 +149,9 @@ Meret's guilt, self-deception, and institutional compromise land well. The clerk
 - Distinct panel briefs: 40
 - Explicit final panel images: 0
 - Current image treatment: one shared atmospheric placeholder
-- Shot-list readiness: blocked by P0 and P1 story corrections
+- Shot-list readiness: blocked by the remaining P0 pacing/world-pressure work and P1 story corrections
 
-Do not commission or generate the complete panel set yet. Tavin continuity, pacing expansion, and conditional crisis/open-gate variants may add, remove, or split situations. After those are locked, convert every surviving node and material state variant into the permanent shot list requested by the project owner.
+Do not commission or generate the complete panel set yet. Pacing expansion and conditional crisis/open-gate variants may add, remove, or split situations. After those are locked, convert every surviving node and material state variant into the permanent shot list requested by the project owner.
 
 ## Acceptance decision
 
@@ -157,6 +159,6 @@ Milestone 0.3 is **not yet accepted** despite the complete beat-sheet implementa
 
 ## Exact next task
 
-**Repair Tavin's physical continuity and ending access across Scenes 2, 6-14, and 16.**
+**Add one purposeful world-pressure beat before evidence distribution.**
 
-Keep the task narrow: add authored recovery or transfer variants, prevent proof custody alone from restoring an unavailable Tavin, and validate every opening status through testimony, crisis, and chapel access. Do not expand general dialogue, build final panels, or address the other audit findings in the same change.
+Keep the task narrow: identify who benefits from the official Red Hollow story, who could answer disclosure with violence, and why the refugees at this checkpoint would pay first. Deliver the pressure through a concrete situation, order, or human need rather than a lore lecture. Give the new situation its own environmental panel brief; do not produce final art yet.

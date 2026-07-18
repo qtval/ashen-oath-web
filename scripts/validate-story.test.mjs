@@ -394,6 +394,13 @@ test("Chapter One opening preserves every lockdown invariant across all branches
     new Set(lockdownArrivals.map(({ tavin_status: value }) => value)),
     new Set(["captured", "hidden", "abandoned", "bargaining"]),
   );
+  for (const values of lockdownArrivals) {
+    assert.equal(
+      values.tavin_can_leave,
+      values.tavin_status === "hidden" || values.tavin_status === "bargaining",
+      `Opening status ${values.tavin_status} has the wrong physical escape access.`,
+    );
+  }
   assert.deepEqual(
     new Set(lockdownArrivals.map(({ sella_promise: value }) => value)),
     new Set(["none", "wagon_passage", "packet_collateral"]),
@@ -412,7 +419,7 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
   const assemblyArrivals = statesArrivingAt(chapter, "ch01_three_hands");
 
   assert(assemblyInvariant, "The evidence-assembly invariant must remain declared.");
-  assert.equal(assemblyArrivals.length, 32400);
+  assert.equal(assemblyArrivals.length, 29025);
   assert.deepEqual(
     new Set(assemblyArrivals.map(({ investigation_route: value }) => value)),
     new Set(["records", "witness", "merchant", "authority"]),
@@ -431,6 +438,7 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
       assert.equal(values.search_warrant_status, "unseen");
       assert.equal(values.sella_tip_known, false);
     } else if (values.investigation_route === "witness") {
+      assert.notEqual(values.tavin_status, "abandoned");
       assert.equal(values.ration_folio_status, "unseen");
       assert.notEqual(values.tavin_testimony, "unheard");
       assert.equal(values.search_warrant_status, "unseen");
@@ -447,6 +455,34 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
       assert.notEqual(values.search_warrant_status, "unseen");
       assert.equal(values.sella_tip_known, false);
     }
+
+    if (values.tavin_status === "abandoned") {
+      assert.notEqual(values.evidence_distribution, "consolidated_tavin");
+      assert.notEqual(values.orl_packet_status, "with_tavin");
+    }
+  }
+
+  const searchTable = chapter.nodes.find(({ id }) => id === "ch01_search_table");
+  const witnessChoice = searchTable.choices.find(({ next }) => next === "ch01_twelve_minutes");
+  assert.equal(choiceIsAvailable(witnessChoice, { tavin_status: "abandoned" }), false);
+  assert.equal(choiceIsAvailable(witnessChoice, { tavin_status: "captured" }), true);
+
+  const recordsTestimony = chapter.nodes.find(
+    ({ id }) => id === "ch01_twelve_minutes_records",
+  );
+  for (const tavin_status of ["captured", "hidden", "abandoned", "bargaining"]) {
+    const contactFragments = recordsTestimony.conditional_text.filter(
+      (fragment) => choiceIsAvailable(fragment, { tavin_status }),
+    );
+    assert.equal(contactFragments.length, 1, `Records route needs one ${tavin_status} contact beat.`);
+  }
+
+  const witnessTestimony = chapter.nodes.find(({ id }) => id === "ch01_twelve_minutes");
+  for (const tavin_status of ["captured", "hidden", "bargaining"]) {
+    const contactFragments = witnessTestimony.conditional_text.filter(
+      (fragment) => choiceIsAvailable(fragment, { tavin_status }),
+    );
+    assert.equal(contactFragments.length, 1, `Witness route needs one ${tavin_status} contact beat.`);
   }
 });
 
@@ -458,7 +494,7 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
   const crisisArrivals = statesArrivingAt(chapter, "ch01_clear_the_road");
 
   assert(crisisInvariant, "The checkpoint-crisis invariant must remain declared.");
-  assert.equal(crisisArrivals.length, 32400);
+  assert.equal(crisisArrivals.length, 29025);
   assert.deepEqual(
     new Set(crisisArrivals.map(({ evidence_distribution: value }) => value)),
     new Set(["consolidated_meret", "consolidated_tavin", "consolidated_sella", "split", "decoy"]),
@@ -477,11 +513,22 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
     new Set(crisisNode.choices.map(({ effects }) => effects.civilian_cost)),
     new Set(["refugees_detained", "soldier_refusal", "refugees_injured", "gate_riot"]),
   );
-  assert.equal(
-    crisisNode.choices.find(({ next }) => next === "ch01_clear_the_road_tavin")
-      .requires.approach_intel,
-    "ditch",
+  const culvertChoice = crisisNode.choices.find(
+    ({ next }) => next === "ch01_clear_the_road_tavin",
   );
+  assert.equal(culvertChoice.requires.approach_intel, "ditch");
+  assert.equal(culvertChoice.requires.tavin_can_leave, true);
+
+  for (const values of crisisArrivals) {
+    assert.equal(
+      choiceIsAvailable(culvertChoice, values),
+      values.approach_intel === "ditch" && values.tavin_can_leave === true,
+    );
+    const positionFragments = crisisNode.conditional_text.filter(
+      (fragment) => choiceIsAvailable(fragment, values),
+    );
+    assert.equal(positionFragments.length, 1, `Crisis needs one ${values.tavin_status} position beat.`);
+  }
 });
 
 test("Chapter One final oath gates custodians without removing the fire ending", async () => {
@@ -491,6 +538,9 @@ test("Chapter One final oath gates custodians without removing the fire ending",
   );
   const oathNode = chapter.nodes.find(({ id }) => id === "ch01_open_gate_oath");
   const oathArrivals = statesArrivingAt(chapter, "ch01_open_gate_oath");
+  const tavinEndingChoice = oathNode.choices.find(
+    ({ next }) => next === "ch01_ending_debt_in_rain",
+  );
 
   assert(endingInvariant, "The final-oath invariant must remain declared.");
   assert(oathNode, "The final oath must exist.");
@@ -533,16 +583,20 @@ test("Chapter One final oath gates custodians without removing the fire ending",
       availableDestinations.has("ch01_ending_fire_keeps"),
       "Destroying the case must remain the fallback ending.",
     );
+    if (availableDestinations.has("ch01_ending_debt_in_rain")) {
+      assert.equal(values.tavin_can_leave, true);
+      assert(!new Set(["captured", "abandoned", "missing"]).has(values.tavin_status));
+    }
     if (values.evidence_distribution === "split") {
-      assert.deepEqual(
-        availableDestinations,
-        new Set([
-          "ch01_ending_quiet_record",
-          "ch01_ending_debt_in_rain",
-          "ch01_ending_merchants_price",
-          "ch01_ending_fire_keeps",
-        ]),
-      );
+      const splitDestinations = new Set([
+        "ch01_ending_quiet_record",
+        "ch01_ending_merchants_price",
+        "ch01_ending_fire_keeps",
+      ]);
+      if (choiceIsAvailable(tavinEndingChoice, values)) {
+        splitDestinations.add("ch01_ending_debt_in_rain");
+      }
+      assert.deepEqual(availableDestinations, splitDestinations);
     }
 
     for (const choice of oathNode.choices.filter((item) => choiceIsAvailable(item, values))) {
@@ -580,5 +634,20 @@ test("Chapter One final oath gates custodians without removing the fire ending",
     }
   }
 
+  assert.equal(tavinEndingChoice.requires.tavin_can_leave, true);
+  assert.equal(choiceIsAvailable(tavinEndingChoice, {
+    tavin_status: "abandoned",
+    tavin_can_leave: false,
+    evidence_distribution: "consolidated_tavin",
+    orl_packet_status: "with_tavin",
+    tavin_testimony: "reliable",
+  }), false, "Proof custody must not restore an abandoned Tavin.");
+  assert.equal(choiceIsAvailable(tavinEndingChoice, {
+    tavin_status: "captured",
+    tavin_can_leave: false,
+    evidence_distribution: "consolidated_tavin",
+    orl_packet_status: "with_tavin",
+    tavin_testimony: "formal",
+  }), false, "Proof custody must not release a captured Tavin.");
   assert(checkedEndingStates.size > 0);
 });
