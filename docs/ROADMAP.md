@@ -59,7 +59,7 @@ Completed so far:
 - [ ] Replace placeholder routes with deliberate branches and reconvergences
 - [ ] Ensure each route contains at least one delayed consequence
 - [x] Write 3-5 distinct Chapter One endings that state the cost, not a win/lose result
-- [ ] Add automated validation for broken links, missing art references, and invalid requirements
+- [x] Add automated validation for broken links, missing art references, invalid requirements, reachability, and ending paths
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
 
@@ -174,6 +174,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Add automated structural validation for the current story data before replacing the placeholder Chapter One routes.**
+**Define the Chapter One story-state schema from the beat sheet's remembered-state contract before replacing the placeholder routes.**
 
-The validator should catch duplicate or missing node IDs, broken `next` links, invalid requirements, unreachable nodes, missing art references, and routes that cannot reach an ending. With that safety net in place, the completed beat sheet can be implemented without expanding or polishing dialogue prematurely.
+Specify the allowed state keys, value types, evidence-custody values, relationship states, and reconvergence invariants used by Scenes 1-18. Then extend the validator to reject unknown state keys and invalid enum values before rewriting story content.

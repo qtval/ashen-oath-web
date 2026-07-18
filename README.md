@@ -35,11 +35,27 @@ web/styles.css              Portrait-first interface styling
 data/chapters/chapter_01.json  Chapter One narrative data
 docs/PROJECT_CONTEXT.md      Permanent product and scope handoff
 docs/ROADMAP.md             Product roadmap
+scripts/validate-story.mjs  Story graph and asset validation
 ```
 
 Story prose and choices belong in `data/`; the reader should remain generic. This keeps the content portable when we later package the web app for Android.
 
 Read [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md) before planning or implementing product work. It is the permanent handoff for the game's identity, story foundation, platform rule, visual direction, and scope constraints.
+
+## Validate the project
+
+Run the story validator before committing story-data changes:
+
+```text
+node scripts/validate-story.mjs
+```
+
+It checks schema basics, node IDs, choice destinations, state requirements, reachability, ending paths, and panel files. Run the validator's regression tests and the repository text check with:
+
+```text
+node --test scripts/validate-story.test.mjs
+node scripts/check-text-encoding.mjs
+```
 
 ## Roadmap
 
