@@ -1,4 +1,4 @@
-# The Ashen Oath â€” Web Prototype
+# The Ashen Oath - Web Prototype
 
 > A grim, choice-driven medieval narrative game where truth can be more dangerous than war.
 
@@ -42,11 +42,10 @@ Story prose and choices belong in `data/`; the reader should remain generic. Thi
 
 1. Validate the reader and publish a browser preview.
 2. Add scene pacing, transitions, settings, and an accessible Chronicle.
-3. Grow Chapter One into a 20â€“30 minute polished vertical slice with original grim political fantasy storytelling.
+3. Grow Chapter One into a 20-30 minute polished vertical slice with original grim political fantasy storytelling.
 4. Add separate monochrome environment panels, sound, and music.
 5. Package the stable web game for Android testing and, later, Google Play.
 
 ## Rights
 
 The code is available under the MIT License. The story, characters, setting, and future artwork/audio are reserved by the project owner; they may not be reused without permission.
-
