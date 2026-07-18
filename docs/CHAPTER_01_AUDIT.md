@@ -84,6 +84,8 @@ Good candidates for expansion are:
 
 Each addition must change information, leverage, access, custody, or a relationship. Do not split existing sentences into extra clicks merely to increase duration.
 
+**Expansion progress:** The reprisal roll now makes renewed war and its civilian hostages concrete. Perrin Dask now recognizes Garren's interrogation cadence and asks him to recover his daughter's travel slate; the player's answer changes public pressure, later civilian action, and Garren's exposure at the open-gate oath. Outside timing is still required before this finding can be closed.
+
 ### P1 - Repair during the structural expansion
 
 #### 4. Several remembered relationship states are inert
@@ -148,7 +150,7 @@ Meret's guilt, self-deception, and institutional compromise land well. The clerk
 
 ## Panel readiness
 
-- Distinct panel briefs: 41
+- Distinct panel briefs: 42
 - Explicit final panel images: 0
 - Current image treatment: one shared atmospheric placeholder
 - Shot-list readiness: blocked by the remaining P0 pacing work and P1 story corrections
@@ -161,6 +163,6 @@ Milestone 0.3 is **not yet accepted** despite the complete beat-sheet implementa
 
 ## Exact next task
 
-**Add one purposeful scene confronting Garren with the human cost of his former interrogation work.**
+**Repair Sella's promise timing.**
 
-Place it before the investigation window so it deepens Chapter One's pacing and Garren's arc rather than padding a route. A refugee or veteran should recognize what Garren did during the war and need something from him now. The choice must alter later cooperation, access, or civilian pressure, receive its own environmental panel brief, and avoid expanding unrelated dialogue or producing final art.
+Accepting Sella's terms during the merchant or witness investigation must record a renewed or binding promise, not a kept one. Mark it kept only when her wagon passes or an ending explicitly fulfills the bargain. Update every affected conditional consequence and test the timing across all routes without adding dialogue, scenes, or final art.

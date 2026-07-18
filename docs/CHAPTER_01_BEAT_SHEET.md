@@ -2,7 +2,7 @@
 
 **Status:** Implementation-ready design draft for the Chapter One rewrite
 
-**Scope:** 19 purposeful scenes, including four endings
+**Scope:** 20 purposeful scenes, including four endings
 
 **Target first-play time:** 20-30 minutes
 
@@ -113,8 +113,9 @@ The machine-readable vocabulary, allowed values, legacy migration keys, and reco
 | `sella_promise` and `sella_trust` | Scenes 5, 10, 13 | Determines whether Sella sacrifices Tavin, burns her license, or accepts the evidence in Ending 3. |
 | `sella_tip_known` | Scene 10 | Lets Garren forgive, leverage, or expose Sella; changes Tavin's reaction at reconvergence. |
 | Evidence custody states | Scenes 7-12 | Determine ending availability, the credibility of the surviving case, and who can be traced. |
-| `public_method` (`restraint`, `deception`, or `coercion`) | Scenes 4, 6, 9 | Changes how the crowd and principal cast interpret Garren during Scene 13. |
+| `public_method` (`restraint`, `deception`, or `coercion`) | Scenes 4, 6, 6B, 9 | Changes how the crowd and principal cast interpret Garren during Scene 13. |
 | `march_families_warned` | Scene 6A | Changes how the Bracken families meet the clearing order and what their escape or detention spreads beyond the gate. |
+| `interrogation_response` | Scene 6B | Changes civilian action and Garren's exposure during the crisis, then returns at the open-gate oath. |
 | `evidence_distribution` | Scene 12 | Ensures no ending can silently consolidate evidence that the player deliberately split or surrendered. |
 | `civilian_cost` | Scene 13 | Appears in every ending; the checkpoint crisis cannot vanish when the branch resolves. |
 
@@ -122,7 +123,7 @@ Every major state must change at least two later moments. A state that changes o
 
 ## Route shape and timing
 
-Each completed route contains 13-14 scenes, including an ending. Scenes 7-12 contain multiple dialogue turns and should carry most of the investigative playtime.
+Each completed route contains 14-15 scenes, including an ending. Scenes 7-12 contain multiple dialogue turns and should carry most of the investigative playtime.
 
 ```mermaid
 flowchart TD
@@ -133,7 +134,8 @@ flowchart TD
     S04 --> S05["05 Wheel in the Mud"]
     S05 --> S06["06 Bell and Bar"]
     S06 --> S06A["06A Names for the Truce"]
-    S06A --> S07["07 The Search Table"]
+    S06A --> S06B["06B The Voice He Remembers"]
+    S06B --> S07["07 The Search Table"]
     S07 -->|records route| S08["08 The Crossed-Out Dead"]
     S08 --> S09["09 Twelve Minutes"]
     S07 -->|witness route| S09
@@ -236,9 +238,21 @@ flowchart TD
 - **Choice or pressure:** Give Meret the list and make her delay the sorting, or warn the named families before soldiers can mark them.
 - **Immediate consequence:** Quiet delay raises Meret's trust and lowers crowd pressure but leaves the families grouped for later seizure. Warning them raises Sella's trust and crowd pressure while giving the families a chance to move.
 - **Delayed consequence:** The checkpoint crisis and its immediate aftermath remember whether the families were warned. Their detention, flight, or rumor can help keep the truce quiet or carry the accusation toward the Bracken levies.
-- **Destination:** Both choices continue to Scene 7.
+- **Destination:** Both choices continue to Scene 6B.
 - **Environmental panel:** Fresh reprisal roll pinned over a rain-bleached truce notice beneath the inner gate; soldiers divide hooded refugee families by village marks while severe timber and weather dominate the composition.
 - **Garren revealed:** He learns that withholding dangerous truth is already an action with named bodies attached to it.
+
+### 06B - `ch01_old_questions` - Registration bench beside the marked families
+
+- **Dramatic purpose:** Confront Garren with a living casualty of his former interrogation work and make him decide whether an old weapon can serve mercy without owning another person.
+- **Characters and wants:** Perrin Dask wants his daughter's confiscated travel slate returned and her name removed from the Bracken roll. The clerk wants to avoid correcting a ledger under scrutiny. Garren wants not to be useful only through coercion.
+- **Revealed or concealed:** During the retreat, Garren questioned Dask for two nights until he named a brother who was already dead. The confession cleared Dask and left his brother recorded as a traitor. One blurred digit now makes Dask's daughter a prospective hostage.
+- **Choice or pressure:** Break the clerk with the same repeated-question cadence, or teach Dask how to make the ledger contradict itself.
+- **Immediate consequence:** Coercion returns the slate but exposes Garren's method and raises Meret's suspicion. Sharing the method lets Dask win the correction himself, increases Sella's trust, and encourages other families to challenge their marks. Both choices raise public pressure at different costs.
+- **Delayed consequence:** At the clearing crisis, either the broken clerk identifies Garren to the superior or Dask's challenge occupies soldiers with disputed arithmetic. The open-gate oath remembers whether Garren kept the method as a private weapon or gave it away.
+- **Destination:** Both choices continue to Scene 7.
+- **Environmental panel:** Rain-slick registration bench beside the marked families; Dask's old wrist scars and his daughter's slate in the foreground, with Garren and the clerk distant behind wet timber and an iron grille.
+- **Garren revealed:** He either repeats the method for a merciful purpose or gives the method away and accepts that he cannot control how people use it.
 
 ### 07 - `ch01_search_table` - Scarred table under the main awning
 

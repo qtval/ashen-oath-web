@@ -439,7 +439,27 @@ test("Chapter One makes the renewed-war pressure concrete before investigation",
     new Set(pressureBeat.choices.map(({ effects }) => effects.march_families_warned)),
     new Set([false, true]),
   );
-  assert(pressureBeat.choices.every(({ next }) => next === "ch01_search_table"));
+  assert(pressureBeat.choices.every(({ next }) => next === "ch01_old_questions"));
+});
+
+test("Chapter One confronts Garren with the cost of his interrogation work", async () => {
+  const { chapter } = await loadChapterOne();
+  const reckoning = chapter.nodes.find(({ id }) => id === "ch01_old_questions");
+
+  assert(reckoning, "The interrogation reckoning must exist before investigation.");
+  assert.match(reckoning.panel_description, /registration bench/);
+  assert.match(reckoning.panel_description, /travel slate/);
+  assert.match(reckoning.text, /Perrin Dask/);
+  assert.match(reckoning.text, /two nights/);
+  assert.match(reckoning.text, /brother/);
+  assert.match(reckoning.text, /daughter/);
+  assert.match(reckoning.text, /Bracken roll/);
+  assert.match(reckoning.text, /open a door/);
+  assert.deepEqual(
+    new Set(reckoning.choices.map(({ effects }) => effects.interrogation_response)),
+    new Set(["clerk_broken", "method_shared"]),
+  );
+  assert(reckoning.choices.every(({ next }) => next === "ch01_search_table"));
 });
 
 test("Chapter One investigation routes preserve exact evidence gaps at assembly", async () => {
@@ -450,7 +470,7 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
   const assemblyArrivals = statesArrivingAt(chapter, "ch01_three_hands");
 
   assert(assemblyInvariant, "The evidence-assembly invariant must remain declared.");
-  assert.equal(assemblyArrivals.length, 58050);
+  assert.equal(assemblyArrivals.length, 116100);
   assert.deepEqual(
     new Set(assemblyArrivals.map(({ investigation_route: value }) => value)),
     new Set(["records", "witness", "merchant", "authority"]),
@@ -525,7 +545,7 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
   const crisisArrivals = statesArrivingAt(chapter, "ch01_clear_the_road");
 
   assert(crisisInvariant, "The checkpoint-crisis invariant must remain declared.");
-  assert.equal(crisisArrivals.length, 58050);
+  assert.equal(crisisArrivals.length, 116100);
   assert.deepEqual(
     new Set(crisisArrivals.map(({ evidence_distribution: value }) => value)),
     new Set(["consolidated_meret", "consolidated_tavin", "consolidated_sella", "split", "decoy"]),
@@ -563,6 +583,10 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
       (fragment) => fragment.group === "reprisal_pressure" && choiceIsAvailable(fragment, values),
     );
     assert.equal(pressureFragments.length, 1, "Crisis must remember whether the families were warned.");
+    const reckoningFragments = crisisNode.conditional_text.filter(
+      (fragment) => fragment.group === "interrogator_reckoning" && choiceIsAvailable(fragment, values),
+    );
+    assert.equal(reckoningFragments.length, 1, "Crisis must remember Garren's answer to Dask.");
   }
 
   for (const outcomeId of [
@@ -648,6 +672,11 @@ test("Chapter One final oath gates custodians without removing the fire ending",
       }
       assert.deepEqual(availableDestinations, splitDestinations);
     }
+
+    const reckoningFragments = oathNode.conditional_text.filter(
+      (fragment) => fragment.group === "interrogator_reckoning" && choiceIsAvailable(fragment, values),
+    );
+    assert.equal(reckoningFragments.length, 1, "Final oath must remember Garren's answer to Dask.");
 
     for (const choice of oathNode.choices.filter((item) => choiceIsAvailable(item, values))) {
       const endingNode = chapter.nodes.find(({ id }) => id === choice.next);

@@ -69,6 +69,11 @@
       "values": ["restraint", "deception", "coercion"],
       "description": "The method the crowd and principal cast have seen Garren use under pressure."
     },
+    "interrogation_response": {
+      "type": "enum",
+      "values": ["clerk_broken", "method_shared"],
+      "description": "How Garren answered Perrin Dask's request: by coercing the checkpoint clerk or teaching Dask to challenge the ledger himself."
+    },
     "orl_packet_status": {
       "type": "enum",
       "values": ["with_garren", "with_meret", "with_tavin", "with_sella", "distributed", "burned", "lost"],
@@ -265,6 +270,7 @@
         "courier_strap_status",
         "search_warrant_status",
         "march_families_warned",
+        "interrogation_response",
         "meret_trust",
         "tavin_trust",
         "sella_trust"
@@ -288,6 +294,7 @@
         "public_method",
         "evidence_distribution",
         "march_families_warned",
+        "interrogation_response",
         "civilian_pressure",
         "civilian_cost"
       ],
@@ -310,6 +317,7 @@
         "search_warrant_status",
         "evidence_distribution",
         "march_families_warned",
+        "interrogation_response",
         "civilian_cost"
       ],
       "description": "Ending availability and cost must use the people, proof, promises, and public harm that survived Scene 13; no branch may silently restore access or evidence."

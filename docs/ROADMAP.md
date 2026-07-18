@@ -68,6 +68,7 @@ Completed so far:
 - [x] Run the timed Chapter One route and continuity audit ([audit](CHAPTER_01_AUDIT.md))
 - [x] Repair Tavin's physical continuity and ending access across testimony, crisis, and chapel branches
 - [x] Dramatize the renewed-war pressure and why the checkpoint refugees would pay first
+- [x] Confront Garren with the human cost of his former interrogation work and pay the choice off after reconvergence
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 
@@ -184,6 +185,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Add one purposeful scene confronting Garren with the human cost of his former interrogation work.**
+**Repair Sella's promise timing.**
 
-Place it before the investigation window so it deepens Chapter One's pacing and Garren's arc rather than padding a route. A refugee or veteran should recognize what Garren did during the war and need something from him now. The choice must alter later cooperation, access, or civilian pressure, receive its own environmental panel brief, and avoid expanding unrelated dialogue or producing final art.
+Accepting Sella's terms during the merchant or witness investigation must record a renewed or binding promise, not a kept one. Mark it kept only when her wagon passes or an ending explicitly fulfills the bargain. Update every affected conditional consequence and test the timing across all routes without adding dialogue, scenes, or final art.
