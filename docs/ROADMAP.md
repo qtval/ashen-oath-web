@@ -52,13 +52,13 @@ Completed so far:
 
 **Purpose:** Turn the checkpoint prototype into a coherent 20-30 minute chapter.
 
-- [ ] Write the Chapter One beat sheet: 15-20 scenes, each with purpose, location, choice, and consequence
-- [ ] Define Garren Vale's voice, contradiction, and arc for this chapter
-- [ ] Finalize Captain Meret, Tavin, and Sella Venn: goals, secrets, loyalties, and breaking points
-- [ ] Establish the Red Hollow mystery and the sealed-letter evidence trail
+- [x] Write the Chapter One beat sheet: 15-20 scenes, each with purpose, location, choice, and consequence ([beat sheet](CHAPTER_01_BEAT_SHEET.md))
+- [x] Define Garren Vale's voice, contradiction, and arc for this chapter
+- [x] Finalize Captain Meret, Tavin, and Sella Venn: goals, secrets, loyalties, and breaking points
+- [x] Establish the Red Hollow mystery and the sealed-letter evidence trail
 - [ ] Replace placeholder routes with deliberate branches and reconvergences
 - [ ] Ensure each route contains at least one delayed consequence
-- [ ] Write 3-5 distinct Chapter One endings that state the cost, not a win/lose result
+- [x] Write 3-5 distinct Chapter One endings that state the cost, not a win/lose result
 - [ ] Add automated validation for broken links, missing art references, and invalid requirements
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
@@ -174,6 +174,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Finish Milestone 0.2's real-phone layout check, then create the Chapter One beat sheet.**
+**Add automated structural validation for the current story data before replacing the placeholder Chapter One routes.**
 
-That beat sheet will be the bridge from a good-looking prototype to a deliberate, playable chapter.
+The validator should catch duplicate or missing node IDs, broken `next` links, invalid requirements, unreachable nodes, missing art references, and routes that cannot reach an ending. With that safety net in place, the completed beat sheet can be implemented without expanding or polishing dialogue prematurely.
