@@ -33,10 +33,13 @@ index.html                  Entry point
 web/app.js                  Story reader and save logic
 web/styles.css              Portrait-first interface styling
 data/chapters/chapter_01.json  Chapter One narrative data
+docs/PROJECT_CONTEXT.md      Permanent product and scope handoff
 docs/ROADMAP.md             Product roadmap
 ```
 
 Story prose and choices belong in `data/`; the reader should remain generic. This keeps the content portable when we later package the web app for Android.
+
+Read [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md) before planning or implementing product work. It is the permanent handoff for the game's identity, story foundation, platform rule, visual direction, and scope constraints.
 
 ## Roadmap
 
