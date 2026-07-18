@@ -61,6 +61,7 @@ Completed so far:
 - [x] Write 3-5 distinct Chapter One endings that state the cost, not a win/lose result
 - [x] Add automated validation for broken links, missing art references, invalid requirements, reachability, and ending paths
 - [x] Define the Chapter One story-state schema, evidence custody values, and reconvergence invariants
+- [x] Replace the prototype opening with beat-sheet Scenes 1-6 through the first lockdown reconvergence
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
 
@@ -175,6 +176,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Replace the prototype opening with beat-sheet Scenes 1-6 through the first lockdown reconvergence.**
+**Replace the prototype investigation window with beat-sheet Scenes 7-11, stopping at the evidence-assembly reconvergence.**
 
-Implement the approach, overlook, Tavin recognition, Meret inspection, Sella promise, and checkpoint lockdown using the validated state vocabulary. Preserve `approach_intel`, Tavin's status and relationship, Meret's response, Sella's promise, Garren's public method, and civilian pressure when the routes meet.
+Implement the search table, route selection, crossed-out ration folio, Tavin's full account, Sella's false floor, and Meret's private warrant disclosure. Set `investigation_route`, update exact evidence custody, and carry every missing proof and relationship consequence into `ch01_three_hands` without restoring evidence off-page.

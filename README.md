@@ -21,7 +21,7 @@ The game is designed for a phone-sized portrait window, but also works on deskto
 ## What is playable today
 
 - A branching opening chapter: **The Carrion Road**
-- Twenty-six narrative scenes and five endings
+- Twenty-nine narrative nodes and five endings
 - Choices with hidden flags, traits, relationships, and delayed consequences
 - Automatic local progress saving, plus manual save and restart controls
 - A black-and-white, environment-first visual placeholder system

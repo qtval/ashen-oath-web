@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
@@ -207,4 +208,71 @@ test("accepts legacy keys but reports them for migration", async () => {
   const result = await validate(story, { stateSchema });
   assert.deepEqual(result.errors, []);
   assert(result.warnings.some(({ code }) => code === "LEGACY_STATE_KEYS"));
+});
+
+test("Chapter One opening preserves every lockdown invariant across all branches", async () => {
+  const chapter = JSON.parse(await readFile(
+    new URL("../data/chapters/chapter_01.json", import.meta.url),
+    "utf8",
+  ));
+  const stateSchema = JSON.parse(await readFile(
+    new URL("../data/schemas/chapter_01_state.json", import.meta.url),
+    "utf8",
+  ));
+  const lockdownInvariant = stateSchema.reconvergence_invariants.find(
+    ({ scene }) => scene === "ch01_bell_and_bar",
+  );
+  const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
+  const queue = [{ nodeId: chapter.nodes[0].id, values: {} }];
+  const lockdownArrivals = [];
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (current.nodeId === "ch01_bell_and_bar") {
+      lockdownArrivals.push(current.values);
+      continue;
+    }
+
+    const storyNode = nodes.get(current.nodeId);
+    assert(storyNode, `Opening route points to missing node ${current.nodeId}.`);
+    for (const choice of storyNode.choices) {
+      const available = !choice.requires || Object.entries(choice.requires).every(
+        ([key, expected]) => current.values[key] === expected,
+      );
+      if (!available) continue;
+
+      const values = { ...current.values };
+      for (const [key, value] of Object.entries(choice.effects || {})) {
+        values[key] = typeof value === "number"
+          ? (Number(values[key]) || 0) + value
+          : value;
+      }
+      queue.push({ nodeId: choice.next, values });
+    }
+  }
+
+  assert(lockdownInvariant, "The lockdown invariant must remain declared in the state schema.");
+  assert.equal(lockdownArrivals.length, 108);
+  for (const values of lockdownArrivals) {
+    for (const key of lockdownInvariant.preserve) {
+      assert(Object.hasOwn(values, key), `Lockdown route lost required state ${key}.`);
+    }
+  }
+
+  assert.deepEqual(
+    new Set(lockdownArrivals.map(({ approach_intel: value }) => value)),
+    new Set(["none", "ditch", "clerk"]),
+  );
+  assert.deepEqual(
+    new Set(lockdownArrivals.map(({ tavin_status: value }) => value)),
+    new Set(["captured", "hidden", "abandoned", "bargaining"]),
+  );
+  assert.deepEqual(
+    new Set(lockdownArrivals.map(({ sella_promise: value }) => value)),
+    new Set(["none", "wagon_passage", "packet_collateral"]),
+  );
+  assert.deepEqual(
+    new Set(lockdownArrivals.map(({ public_method: value }) => value)),
+    new Set(["restraint", "deception", "coercion"]),
+  );
 });
