@@ -1,5 +1,5 @@
 import { access, readFile, readdir } from "node:fs/promises";
-import { isAbsolute, relative, resolve } from "node:path";
+import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -68,6 +68,192 @@ function resolvePanelPath(reference, rootPath) {
   return resolvedPath;
 }
 
+function resolveProjectReference(reference, basePath, rootPath) {
+  if (!hasText(reference) || /^[a-z][a-z\d+.-]*:/i.test(reference) || reference.startsWith("//")) {
+    return null;
+  }
+
+  const cleanReference = reference.split(/[?#]/, 1)[0];
+  const resolvedPath = resolve(basePath, cleanReference);
+  const projectRelativePath = relative(rootPath, resolvedPath);
+
+  if (projectRelativePath.startsWith("..") || isAbsolute(projectRelativePath)) return null;
+  return resolvedPath;
+}
+
+function validateStateSchema(schema, chapterTitle, addError) {
+  const definitions = new Map();
+  const legacyKeys = new Set();
+
+  if (!isPlainObject(schema)) {
+    addError("INVALID_STATE_SCHEMA", "State schema must contain a JSON object.");
+    return { definitions, legacyKeys };
+  }
+
+  if (schema.schema_version !== 1) {
+    addError("INVALID_STATE_SCHEMA_VERSION", "State schema schema_version must be 1.");
+  }
+  if (!hasText(schema.chapter) || schema.chapter !== chapterTitle) {
+    addError(
+      "STATE_SCHEMA_CHAPTER_MISMATCH",
+      `State schema chapter must match story chapter "${chapterTitle}".`,
+    );
+  }
+
+  for (const [groupName, isLegacy] of [["states", false], ["legacy_states", true]]) {
+    const group = schema[groupName];
+    if (!isPlainObject(group)) {
+      addError("INVALID_STATE_SCHEMA_GROUP", `State schema ${groupName} must be an object.`);
+      continue;
+    }
+
+    for (const [key, definition] of Object.entries(group)) {
+      const location = `state schema ${groupName}.${key}`;
+      if (!hasText(key)) {
+        addError("INVALID_SCHEMA_STATE_KEY", `${location} has an empty key.`);
+        continue;
+      }
+      if (definitions.has(key)) {
+        addError(
+          "DUPLICATE_SCHEMA_STATE_KEY",
+          `${location} duplicates a state key declared in another schema group.`,
+        );
+        continue;
+      }
+      if (!isPlainObject(definition)) {
+        addError("INVALID_STATE_DEFINITION", `${location} must be an object.`);
+        continue;
+      }
+
+      const supportedTypes = new Set(["boolean", "enum", "number", "string"]);
+      if (!supportedTypes.has(definition.type)) {
+        addError(
+          "INVALID_SCHEMA_STATE_TYPE",
+          `${location}.type must be boolean, enum, number, or string.`,
+        );
+      }
+      if (!hasText(definition.description)) {
+        addError("MISSING_STATE_DESCRIPTION", `${location} needs a non-empty description.`);
+      }
+
+      if (definition.type === "number" && definition.operation !== "increment") {
+        addError(
+          "INVALID_NUMBER_OPERATION",
+          `${location}.operation must be "increment" because numeric effects are additive.`,
+        );
+      }
+      if (definition.type === "enum") {
+        if (!Array.isArray(definition.values) || definition.values.length === 0) {
+          addError("MISSING_ENUM_VALUES", `${location}.values must contain allowed strings.`);
+        } else {
+          const uniqueValues = new Set();
+          for (const value of definition.values) {
+            if (!hasText(value)) {
+              addError("INVALID_ENUM_SCHEMA_VALUE", `${location}.values must contain non-empty strings.`);
+            } else if (uniqueValues.has(value)) {
+              addError("DUPLICATE_ENUM_SCHEMA_VALUE", `${location}.values repeats "${value}".`);
+            }
+            uniqueValues.add(value);
+          }
+        }
+      }
+
+      definitions.set(key, { ...definition, legacy: isLegacy });
+      if (isLegacy) legacyKeys.add(key);
+    }
+  }
+
+  if (!Array.isArray(schema.reconvergence_invariants)) {
+    addError(
+      "INVALID_RECONVERGENCE_INVARIANTS",
+      "State schema reconvergence_invariants must be an array.",
+    );
+  } else {
+    const invariantIds = new Set();
+    for (const [index, invariant] of schema.reconvergence_invariants.entries()) {
+      const location = `reconvergence invariant ${index + 1}`;
+      if (!isPlainObject(invariant)) {
+        addError("INVALID_RECONVERGENCE_INVARIANT", `${location} must be an object.`);
+        continue;
+      }
+      if (!hasText(invariant.id)) {
+        addError("MISSING_INVARIANT_ID", `${location} needs a non-empty id.`);
+      } else if (invariantIds.has(invariant.id)) {
+        addError("DUPLICATE_INVARIANT_ID", `${location} repeats id "${invariant.id}".`);
+      } else {
+        invariantIds.add(invariant.id);
+      }
+      if (!hasText(invariant.scene)) {
+        addError("MISSING_INVARIANT_SCENE", `${location} needs a beat-sheet scene id.`);
+      }
+      if (!hasText(invariant.description)) {
+        addError("MISSING_INVARIANT_DESCRIPTION", `${location} needs a non-empty description.`);
+      }
+      if (!Array.isArray(invariant.preserve) || invariant.preserve.length === 0) {
+        addError("MISSING_INVARIANT_STATES", `${location}.preserve must list state keys.`);
+        continue;
+      }
+
+      const preservedKeys = new Set();
+      for (const key of invariant.preserve) {
+        if (!hasText(key) || !definitions.has(key)) {
+          addError(
+            "UNKNOWN_INVARIANT_STATE_KEY",
+            `${location}.preserve references unknown state key "${key}".`,
+          );
+        } else if (preservedKeys.has(key)) {
+          addError(
+            "DUPLICATE_INVARIANT_STATE_KEY",
+            `${location}.preserve repeats state key "${key}".`,
+          );
+        }
+        preservedKeys.add(key);
+      }
+    }
+  }
+
+  return { definitions, legacyKeys };
+}
+
+function validateStateValueAgainstSchema(
+  key,
+  value,
+  location,
+  kind,
+  schemaInfo,
+  usedLegacyKeys,
+  addError,
+) {
+  const definition = schemaInfo.definitions.get(key);
+  if (!definition) {
+    addError("UNKNOWN_STATE_KEY", `${location} ${kind} uses unknown state key "${key}".`);
+    return false;
+  }
+  if (definition.legacy) usedLegacyKeys.add(key);
+
+  let valueIsValid = true;
+  if (definition.type === "boolean") valueIsValid = typeof value === "boolean";
+  else if (definition.type === "number") valueIsValid = typeof value === "number" && Number.isFinite(value);
+  else if (definition.type === "string") valueIsValid = typeof value === "string";
+  else if (definition.type === "enum") valueIsValid = definition.values?.includes(value) === true;
+
+  if (!valueIsValid) {
+    if (definition.type === "enum") {
+      addError(
+        "INVALID_ENUM_STATE_VALUE",
+        `${location} ${kind}.${key} must be one of: ${definition.values?.join(", ")}.`,
+      );
+    } else {
+      addError(
+        "INVALID_TYPED_STATE_VALUE",
+        `${location} ${kind}.${key} must be a ${definition.type}.`,
+      );
+    }
+  }
+
+  return valueIsValid;
+}
+
 function validateStateMap(value, location, kind, addError) {
   if (!isPlainObject(value)) {
     addError("INVALID_STATE_MAP", `${location} ${kind} must be an object.`);
@@ -114,6 +300,11 @@ export async function validateStoryData(story, options = {}) {
   if (!hasText(story.chapter)) {
     addError("MISSING_CHAPTER_TITLE", `${sourceLabel} must define a non-empty chapter title.`);
   }
+
+  const schemaInfo = options.stateSchema
+    ? validateStateSchema(options.stateSchema, story.chapter, addError)
+    : null;
+  const usedLegacyKeys = new Set();
 
   if (!Array.isArray(story.nodes) || story.nodes.length === 0) {
     addError("MISSING_NODES", `${sourceLabel} must define at least one story node.`);
@@ -201,6 +392,19 @@ export async function validateStoryData(story, options = {}) {
       let requirementsAreValid = true;
       if (choice.requires !== undefined) {
         requirementsAreValid = validateStateMap(choice.requires, choiceLabel, "requires", addError);
+        if (requirementsAreValid && schemaInfo) {
+          for (const [key, value] of Object.entries(choice.requires)) {
+            requirementsAreValid = validateStateValueAgainstSchema(
+              key,
+              value,
+              choiceLabel,
+              "requires",
+              schemaInfo,
+              usedLegacyKeys,
+              addError,
+            ) && requirementsAreValid;
+          }
+        }
         if (isPlainObject(choice.requires)) {
           Object.keys(choice.requires).forEach((key) => requiredStateKeys.add(key));
         }
@@ -216,6 +420,19 @@ export async function validateStoryData(story, options = {}) {
       let effectsAreValid = true;
       if (choice.effects !== undefined) {
         effectsAreValid = validateStateMap(choice.effects, choiceLabel, "effects", addError);
+        if (effectsAreValid && schemaInfo) {
+          for (const [key, value] of Object.entries(choice.effects)) {
+            effectsAreValid = validateStateValueAgainstSchema(
+              key,
+              value,
+              choiceLabel,
+              "effects",
+              schemaInfo,
+              usedLegacyKeys,
+              addError,
+            ) && effectsAreValid;
+          }
+        }
       }
 
       validChoices.push({
@@ -415,6 +632,13 @@ export async function validateStoryData(story, options = {}) {
     }
   }
 
+  if (usedLegacyKeys.size > 0) {
+    warnings.push({
+      code: "LEGACY_STATE_KEYS",
+      message: `Prototype story still uses legacy state keys: ${[...usedLegacyKeys].sort().join(", ")}.`,
+    });
+  }
+
   return {
     errors,
     warnings,
@@ -425,12 +649,14 @@ export async function validateStoryData(story, options = {}) {
       explicitPanels: explicitPanelReferences.length,
       nodes: story.nodes.length,
       runtimeStates: runtimeStateCount,
+      stateKeys: schemaInfo?.definitions.size || 0,
     },
   };
 }
 
 export async function validateStoryFile(storyPath, options = {}) {
-  const sourceLabel = relative(options.projectRootPath || projectRoot, storyPath).replaceAll("\\", "/");
+  const rootPath = options.projectRootPath || projectRoot;
+  const sourceLabel = relative(rootPath, storyPath).replaceAll("\\", "/");
   let story;
 
   try {
@@ -443,10 +669,39 @@ export async function validateStoryFile(storyPath, options = {}) {
     };
   }
 
-  return validateStoryData(story, {
+  const schemaErrors = [];
+  let stateSchema;
+  if (!hasText(story.state_schema)) {
+    schemaErrors.push({
+      code: "MISSING_STATE_SCHEMA_REFERENCE",
+      message: `${sourceLabel} must define a state_schema path.`,
+    });
+  } else {
+    const schemaPath = resolveProjectReference(story.state_schema, dirname(storyPath), rootPath);
+    if (!schemaPath) {
+      schemaErrors.push({
+        code: "INVALID_STATE_SCHEMA_REFERENCE",
+        message: `${sourceLabel} state_schema must resolve to a local file inside the project.`,
+      });
+    } else {
+      try {
+        stateSchema = JSON.parse(await readFile(schemaPath, "utf8"));
+      } catch (error) {
+        schemaErrors.push({
+          code: "STATE_SCHEMA_LOAD_ERROR",
+          message: `${sourceLabel} state_schema could not be loaded: ${error.message}`,
+        });
+      }
+    }
+  }
+
+  const result = await validateStoryData(story, {
     ...options,
     sourceLabel,
+    stateSchema,
   });
+  result.errors.unshift(...schemaErrors);
+  return result;
 }
 
 async function storyPathsFromArguments(arguments_) {
@@ -471,6 +726,7 @@ async function main() {
   for (const storyPath of storyPaths) {
     const sourceLabel = relative(projectRoot, storyPath).replaceAll("\\", "/");
     const result = await validateStoryFile(storyPath, { projectRootPath: projectRoot });
+    result.warnings.forEach(({ code, message }) => console.warn(`- [${code}] ${message}`));
     if (result.errors.length > 0) {
       failureCount += 1;
       console.error(`${sourceLabel}: validation failed`);
@@ -478,10 +734,11 @@ async function main() {
       continue;
     }
 
-    const { choices, endings, explicitPanels, nodes, runtimeStates } = result.summary;
+    const { choices, endings, explicitPanels, nodes, runtimeStates, stateKeys } = result.summary;
     console.log(
       `${sourceLabel}: passed (${nodes} nodes, ${choices} choices, ${endings} endings, `
-      + `${runtimeStates} reachable control states, ${explicitPanels} explicit panel images)`,
+      + `${runtimeStates} reachable control states, ${stateKeys} schema keys, `
+      + `${explicitPanels} explicit panel images)`,
     );
   }
 

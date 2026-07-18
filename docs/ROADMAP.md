@@ -60,6 +60,7 @@ Completed so far:
 - [ ] Ensure each route contains at least one delayed consequence
 - [x] Write 3-5 distinct Chapter One endings that state the cost, not a win/lose result
 - [x] Add automated validation for broken links, missing art references, invalid requirements, reachability, and ending paths
+- [x] Define the Chapter One story-state schema, evidence custody values, and reconvergence invariants
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
 
@@ -174,6 +175,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Define the Chapter One story-state schema from the beat sheet's remembered-state contract before replacing the placeholder routes.**
+**Replace the prototype opening with beat-sheet Scenes 1-6 through the first lockdown reconvergence.**
 
-Specify the allowed state keys, value types, evidence-custody values, relationship states, and reconvergence invariants used by Scenes 1-18. Then extend the validator to reject unknown state keys and invalid enum values before rewriting story content.
+Implement the approach, overlook, Tavin recognition, Meret inspection, Sella promise, and checkpoint lockdown using the validated state vocabulary. Preserve `approach_intel`, Tavin's status and relationship, Meret's response, Sella's promise, Garren's public method, and civilian pressure when the routes meet.

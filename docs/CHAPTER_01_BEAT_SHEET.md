@@ -101,6 +101,8 @@ The strongest evidence state is deliberately not a clean success state. More pro
 
 Reconvergence must preserve choices through changed access, testimony, risk, and ending cost. These are narrative state categories, not visible morality scores.
 
+The machine-readable vocabulary, allowed values, legacy migration keys, and reconvergence declarations live in [`data/schemas/chapter_01_state.json`](../data/schemas/chapter_01_state.json). Story effects and requirements must use that schema rather than inventing keys during dialogue implementation.
+
 | State | Set by | Must pay off later |
 | --- | --- | --- |
 | `approach_intel` (`ditch`, `clerk`, or none) | Scenes 1-2 | Opens an escape or records option in Scenes 6, 8, or 13. |

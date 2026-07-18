@@ -1,5 +1,6 @@
 {
   "chapter": "The Carrion Road",
+  "state_schema": "../schemas/chapter_01_state.json",
   "nodes": [
     {"id":"checkpoint_arrival","panel_description":"A rain-lashed road descends toward a timber checkpoint. Refugees wait between broken wagons; black pennants hang without wind.","speaker":"","text":"Home is three miles away. The king's soldiers have placed a wall between you and it.","choices":[{"text":"Join the line and keep your head down.","next":"wagon_recognition","effects":{"caution":1}},{"text":"Study the checkpoint before approaching.","next":"watch_checkpoint","effects":{"observation":1}}]},
     {"id":"watch_checkpoint","panel_description":"Seen from a muddy rise: six soldiers, a clerk, two cages, and a narrow drainage ditch beside the palisade.","speaker":"Garren","text":"Six men pretending there are no graves behind the trees. One of them keeps watching the merchant's wagon.","choices":[{"text":"Enter the line.","next":"wagon_recognition","effects":{"knows_escape_route":true}}]},

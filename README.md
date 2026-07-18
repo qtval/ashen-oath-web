@@ -33,6 +33,7 @@ index.html                  Entry point
 web/app.js                  Story reader and save logic
 web/styles.css              Portrait-first interface styling
 data/chapters/chapter_01.json  Chapter One narrative data
+data/schemas/chapter_01_state.json  Chapter One state vocabulary and invariants
 docs/PROJECT_CONTEXT.md      Permanent product and scope handoff
 docs/ROADMAP.md             Product roadmap
 scripts/validate-story.mjs  Story graph and asset validation
@@ -50,7 +51,7 @@ Run the story validator before committing story-data changes:
 node scripts/validate-story.mjs
 ```
 
-It checks schema basics, node IDs, choice destinations, state requirements, reachability, ending paths, and panel files. Run the validator's regression tests and the repository text check with:
+It checks schema basics, node IDs, choice destinations, state keys and values, requirements, reachability, ending paths, reconvergence declarations, and panel files. Run the validator's regression tests and the repository text check with:
 
 ```text
 node --test scripts/validate-story.test.mjs

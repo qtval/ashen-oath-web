@@ -18,11 +18,22 @@ function node(id, choices, extra = {}) {
   };
 }
 
-async function validate(story, missingSuffix = null) {
+function schema(chapter, states, options = {}) {
+  return {
+    schema_version: 1,
+    chapter,
+    states,
+    legacy_states: options.legacyStates || {},
+    reconvergence_invariants: options.invariants || [],
+  };
+}
+
+async function validate(story, options = {}) {
   return validateStoryData(story, {
-    fileExists: async (path) => !missingSuffix || !path.endsWith(missingSuffix),
+    fileExists: async (path) => !options.missingSuffix || !path.endsWith(options.missingSuffix),
     projectRootPath: testProjectRoot,
     sourceLabel: "test story",
+    stateSchema: options.stateSchema,
   });
 }
 
@@ -40,10 +51,15 @@ test("accepts a state-gated route that reaches an ending", async () => {
     ],
   };
 
-  const result = await validate(story);
+  const result = await validate(story, {
+    stateSchema: schema("Test Chapter", {
+      has_key: { type: "boolean", description: "Whether the key was taken." },
+    }),
+  });
   assert.deepEqual(result.errors, []);
   assert.equal(result.summary.nodes, 3);
   assert.equal(result.summary.endings, 1);
+  assert.equal(result.summary.stateKeys, 1);
 });
 
 test("reports missing and duplicate ids, broken links, and unreachable nodes", async () => {
@@ -98,7 +114,7 @@ test("reports missing explicit panel files", async () => {
     ],
   };
 
-  const codes = errorCodes(await validate(story, "missing-panel.png"));
+  const codes = errorCodes(await validate(story, { missingSuffix: "missing-panel.png" }));
   assert(codes.has("MISSING_PANEL_FILE"));
 });
 
@@ -114,4 +130,81 @@ test("reports reachable routes that cannot reach an ending", async () => {
   const codes = errorCodes(await validate(story));
   assert(codes.has("NO_REACHABLE_ENDING"));
   assert(codes.has("NON_TERMINATING_ROUTE"));
+});
+
+test("rejects unknown state keys and values outside declared types or enums", async () => {
+  const stateSchema = schema("Strict State", {
+    route: {
+      type: "enum",
+      values: ["records", "witness"],
+      description: "Selected investigation route.",
+    },
+    trust: {
+      type: "number",
+      operation: "increment",
+      description: "Accumulated trust.",
+    },
+  });
+  const story = {
+    chapter: "Strict State",
+    nodes: [
+      node("start", [{
+        text: "Break the schema.",
+        next: "ending",
+        effects: { route: "merchant", trust: true, typo_key: false },
+      }]),
+      node("ending", [], { ending: "THE END" }),
+    ],
+  };
+
+  const codes = errorCodes(await validate(story, { stateSchema }));
+  assert(codes.has("UNKNOWN_STATE_KEY"));
+  assert(codes.has("INVALID_ENUM_STATE_VALUE"));
+  assert(codes.has("INVALID_TYPED_STATE_VALUE"));
+});
+
+test("validates reconvergence declarations against known state keys", async () => {
+  const stateSchema = schema("Invariant State", {
+    trust: {
+      type: "number",
+      operation: "increment",
+      description: "Accumulated trust.",
+    },
+  }, {
+    invariants: [{
+      id: "preserve_unknown",
+      scene: "scene_reconverge",
+      preserve: ["trust", "missing_key"],
+      description: "A deliberately invalid invariant.",
+    }],
+  });
+  const story = {
+    chapter: "Invariant State",
+    nodes: [
+      node("start", [{ text: "Finish.", next: "ending" }]),
+      node("ending", [], { ending: "THE END" }),
+    ],
+  };
+
+  const codes = errorCodes(await validate(story, { stateSchema }));
+  assert(codes.has("UNKNOWN_INVARIANT_STATE_KEY"));
+});
+
+test("accepts legacy keys but reports them for migration", async () => {
+  const stateSchema = schema("Legacy State", {}, {
+    legacyStates: {
+      old_flag: { type: "boolean", description: "Temporary prototype flag." },
+    },
+  });
+  const story = {
+    chapter: "Legacy State",
+    nodes: [
+      node("start", [{ text: "Use the old flag.", next: "ending", effects: { old_flag: true } }]),
+      node("ending", [], { ending: "THE END" }),
+    ],
+  };
+
+  const result = await validate(story, { stateSchema });
+  assert.deepEqual(result.errors, []);
+  assert(result.warnings.some(({ code }) => code === "LEGACY_STATE_KEYS"));
 });

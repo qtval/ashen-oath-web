@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "chapter": "The Carrion Road",
+  "states": {
+    "approach_intel": {
+      "type": "enum",
+      "values": ["none", "ditch", "clerk"],
+      "description": "The single checkpoint advantage Garren chooses during the opening approach."
+    },
+    "investigation_route": {
+      "type": "enum",
+      "values": ["records", "witness", "merchant", "authority"],
+      "description": "The two-scene investigation window selected at the search table."
+    },
+    "tavin_status": {
+      "type": "enum",
+      "values": ["hidden", "captured", "abandoned", "bargaining", "escaped", "missing", "protected"],
+      "description": "Tavin's physical availability and custody without asserting an off-page death."
+    },
+    "tavin_trust": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Accumulated willingness to give Garren a complete account and share later risk."
+    },
+    "tavin_fear": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Accumulated pressure that can turn testimony into a protective lie."
+    },
+    "tavin_testimony": {
+      "type": "enum",
+      "values": ["unheard", "partial", "reliable", "coerced", "protective_lie", "formal"],
+      "description": "The evidentiary condition of Tavin's account, separate from his relationship score."
+    },
+    "meret_trust": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Accumulated willingness to risk authority beside Garren rather than merely use him."
+    },
+    "meret_suspicion": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Accumulated belief that Garren is manipulating the checkpoint or blackmailing her."
+    },
+    "meret_guilt_named": {
+      "type": "boolean",
+      "description": "Whether Garren has made Meret's authentication of the Red Hollow order explicit."
+    },
+    "sella_promise": {
+      "type": "enum",
+      "values": ["none", "wagon_passage", "packet_collateral", "kept", "broken"],
+      "description": "The concrete obligation binding Garren and Sella, including whether it survived the crisis."
+    },
+    "sella_trust": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Accumulated willingness to risk Sella's dependents and network on Garren's word."
+    },
+    "sella_tip_known": {
+      "type": "boolean",
+      "description": "Whether Garren knows Sella anonymously alerted the checkpoint to Tavin's arrival."
+    },
+    "public_method": {
+      "type": "enum",
+      "values": ["restraint", "deception", "coercion"],
+      "description": "The method the crowd and principal cast have seen Garren use under pressure."
+    },
+    "orl_packet_status": {
+      "type": "enum",
+      "values": ["with_garren", "with_meret", "with_sella", "distributed", "burned", "lost"],
+      "description": "Custody of Captain Orl's sealed packet and pressure-copy."
+    },
+    "ration_folio_status": {
+      "type": "enum",
+      "values": ["unseen", "original_stolen", "copied", "memorized", "with_meret", "destroyed"],
+      "description": "The form and custody of the crossed-out supply evidence."
+    },
+    "courier_strap_status": {
+      "type": "enum",
+      "values": ["hidden_with_sella", "with_garren", "with_meret", "traded", "lost"],
+      "description": "Custody of the stamped strap that corroborates the countermand courier."
+    },
+    "search_warrant_status": {
+      "type": "enum",
+      "values": ["unseen", "copied", "with_meret", "repudiated", "sent_on", "burned"],
+      "description": "Custody and public status of the active cover-up warrant."
+    },
+    "evidence_distribution": {
+      "type": "enum",
+      "values": ["unassembled", "consolidated_meret", "consolidated_tavin", "consolidated_sella", "split", "decoy", "destroyed"],
+      "description": "The deliberate custody plan chosen when the available proof is assembled."
+    },
+    "civilian_pressure": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Accumulated checkpoint instability before the order to clear the road."
+    },
+    "civilian_cost": {
+      "type": "enum",
+      "values": ["none", "refugees_detained", "refugees_injured", "soldier_refusal", "wagon_seized", "gate_riot"],
+      "description": "The primary public harm carried from the checkpoint crisis into every ending."
+    }
+  },
+  "legacy_states": {
+    "authority_reputation": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only authority score pending route replacement."
+    },
+    "authority_suspicion": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only checkpoint suspicion score pending route replacement."
+    },
+    "caution": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only caution trait pending route replacement."
+    },
+    "chapel_route": {
+      "type": "boolean",
+      "description": "Prototype-only chapel-route flag pending route replacement."
+    },
+    "clerk_remembered": {
+      "type": "boolean",
+      "description": "Prototype-only clerk memory flag pending route replacement."
+    },
+    "copied_seal": {
+      "type": "boolean",
+      "description": "Prototype-only evidence flag pending evidence-custody states."
+    },
+    "deception": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only deception trait pending public_method."
+    },
+    "deserter_status": {
+      "type": "enum",
+      "values": ["captured", "hidden", "unknown", "escaped", "abandoned", "alive", "dead"],
+      "description": "Prototype-only Tavin status pending tavin_status."
+    },
+    "deserter_trust": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only witness score pending tavin_trust."
+    },
+    "evidence_strength": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only aggregate proof score pending evidence custody."
+    },
+    "knows_escape_route": {
+      "type": "boolean",
+      "description": "Prototype-only route flag pending approach_intel."
+    },
+    "letter_status": {
+      "type": "enum",
+      "values": ["crown", "burned", "kept"],
+      "description": "Prototype-only letter custody pending orl_packet_status."
+    },
+    "letter_suspicion": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only suspicion score pending route replacement."
+    },
+    "merchant_debt": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only merchant debt pending sella_promise."
+    },
+    "meret_deceived": {
+      "type": "boolean",
+      "description": "Prototype-only deception flag pending public_method and Meret states."
+    },
+    "meret_favor": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only favor score pending meret_trust."
+    },
+    "observation": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only observation trait pending approach_intel and authored access."
+    },
+    "official_story": {
+      "type": "enum",
+      "values": ["obedience", "quiet_return"],
+      "description": "Prototype-only outcome label pending evidence_distribution and ending state."
+    },
+    "opportunism": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only trait pending authored relationship consequences."
+    },
+    "ruthlessness": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only trait pending public_method."
+    },
+    "sella_debt": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only debt score pending sella_promise."
+    },
+    "sella_suspicion": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only merchant suspicion pending authored disclosure."
+    },
+    "silver": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only currency counter; no economy is planned for Chapter One."
+    },
+    "tavin_named": {
+      "type": "boolean",
+      "description": "Prototype-only identity flag made redundant by the planned scene structure."
+    },
+    "violence": {
+      "type": "number",
+      "operation": "increment",
+      "description": "Prototype-only violence trait pending public_method."
+    }
+  },
+  "reconvergence_invariants": [
+    {
+      "id": "lockdown_preserves_opening_costs",
+      "scene": "ch01_bell_and_bar",
+      "preserve": [
+        "approach_intel",
+        "tavin_status",
+        "tavin_trust",
+        "tavin_fear",
+        "meret_trust",
+        "meret_suspicion",
+        "sella_promise",
+        "sella_trust",
+        "public_method",
+        "civilian_pressure"
+      ],
+      "description": "The lockdown shares a location and pressure, but Tavin's custody, each relationship, Garren's visible method, and the chosen approach advantage must remain material."
+    },
+    {
+      "id": "evidence_assembly_preserves_route_gaps",
+      "scene": "ch01_three_hands",
+      "preserve": [
+        "investigation_route",
+        "tavin_testimony",
+        "orl_packet_status",
+        "ration_folio_status",
+        "courier_strap_status",
+        "search_warrant_status",
+        "meret_trust",
+        "tavin_trust",
+        "sella_trust"
+      ],
+      "description": "Only evidence actually obtained on the selected investigation route may be assembled; missing, surrendered, or destroyed proof cannot appear at reconvergence."
+    },
+    {
+      "id": "crisis_pays_every_breaking_point",
+      "scene": "ch01_clear_the_road",
+      "preserve": [
+        "tavin_status",
+        "tavin_trust",
+        "tavin_fear",
+        "meret_trust",
+        "meret_suspicion",
+        "meret_guilt_named",
+        "sella_promise",
+        "sella_trust",
+        "sella_tip_known",
+        "public_method",
+        "evidence_distribution",
+        "civilian_pressure",
+        "civilian_cost"
+      ],
+      "description": "Each principal's breaking point and the crowd's response must vary with remembered trust, fear, promises, exposure, method, evidence custody, and accumulated pressure."
+    },
+    {
+      "id": "ending_choice_uses_surviving_custody",
+      "scene": "ch01_open_gate_oath",
+      "preserve": [
+        "tavin_status",
+        "tavin_trust",
+        "meret_trust",
+        "meret_suspicion",
+        "sella_promise",
+        "sella_trust",
+        "orl_packet_status",
+        "ration_folio_status",
+        "courier_strap_status",
+        "search_warrant_status",
+        "evidence_distribution",
+        "civilian_cost"
+      ],
+      "description": "Ending availability and cost must use the people, proof, promises, and public harm that survived Scene 13; no branch may silently restore access or evidence."
+    }
+  ]
+}
