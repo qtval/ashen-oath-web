@@ -65,6 +65,8 @@ button { font: inherit; }
 .dialogue { max-width: 42rem; margin: 0 0 1.15rem; text-shadow: 0 2px 12px #000, 0 0 2px #000; }
 .speaker { margin: 0 0 .5rem; color: rgba(255,255,255,.78); font: 700 .68rem/1.2 system-ui, sans-serif; letter-spacing: .15em; text-transform: uppercase; }
 .text { margin: 0; font-size: clamp(1.08rem, 4.4vw, 1.45rem); line-height: 1.42; }
+.text + .text { margin-top: .62rem; }
+.text.remembered { font-size: clamp(.98rem, 3.7vw, 1.12rem); line-height: 1.4; }
 
 .choices { display: grid; border-top: 1px solid var(--line); }
 .choice {
@@ -87,8 +89,9 @@ button { font: inherit; }
 
 .footer { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 1rem; padding: .55rem 1.15rem max(.5rem, env(safe-area-inset-bottom)); color: rgba(255,255,255,.46); font: .62rem/1.2 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
 .ending { margin-bottom: .4rem; padding: 1rem 0; text-align: left; text-shadow: 0 2px 12px #000; }
-.ending h1 { margin: 0 0 .35rem; font-size: 1.25rem; letter-spacing: .08em; }
-.ending p { margin: 0 0 1rem; color: var(--muted); line-height: 1.45; }
+.ending h1 { margin: 0 0 .8rem; font-size: 1.25rem; letter-spacing: .08em; }
+.ending .dialogue { margin-bottom: .8rem; }
+.ending-close { margin: 0 0 1rem; color: var(--muted); line-height: 1.45; }
 .ending .restart { padding: .45rem 0; color: var(--ink); text-decoration: underline; text-underline-offset: .3rem; }
 .status-screen { min-height: 100dvh; display: grid; place-items: center; color: var(--muted); }
 

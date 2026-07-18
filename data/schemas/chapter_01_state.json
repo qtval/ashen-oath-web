@@ -99,6 +99,11 @@
       "type": "enum",
       "values": ["none", "refugees_detained", "refugees_injured", "soldier_refusal", "wagon_seized", "gate_riot"],
       "description": "The primary public harm carried from the checkpoint crisis into every ending."
+    },
+    "chapter_two_identity": {
+      "type": "enum",
+      "values": ["sanctioned_accomplice", "hunted_witness_keeper", "broker_network_debtor", "crown_marked_destroyer"],
+      "description": "The role Garren accepts through the final custody decision and carries into Chapter Two."
     }
   },
   "legacy_states": {

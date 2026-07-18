@@ -375,6 +375,89 @@ export async function validateStoryData(story, options = {}) {
       }
     }
 
+    if (node.conditional_text !== undefined) {
+      if (!Array.isArray(node.conditional_text) || node.conditional_text.length === 0) {
+        addError(
+          "INVALID_CONDITIONAL_TEXT",
+          `${nodeLabel} conditional_text must be a non-empty array.`,
+        );
+      } else {
+        node.conditional_text.forEach((fragment, fragmentIndex) => {
+          const fragmentLabel = `${nodeLabel}, conditional text ${fragmentIndex + 1}`;
+          if (!isPlainObject(fragment)) {
+            addError("INVALID_CONDITIONAL_FRAGMENT", `${fragmentLabel} must be an object.`);
+            return;
+          }
+          if (!hasText(fragment.group)) {
+            addError("MISSING_CONDITIONAL_GROUP", `${fragmentLabel} needs a non-empty group.`);
+          }
+          if (!hasText(fragment.text)) {
+            addError("MISSING_CONDITIONAL_TEXT", `${fragmentLabel} needs non-empty text.`);
+          }
+          if (fragment.requires === undefined && fragment.requires_any === undefined) {
+            addError(
+              "MISSING_CONDITIONAL_REQUIREMENT",
+              `${fragmentLabel} needs requires or requires_any.`,
+            );
+          }
+
+          if (fragment.requires !== undefined) {
+            const valid = validateStateMap(
+              fragment.requires,
+              fragmentLabel,
+              "requires",
+              addError,
+            );
+            if (valid && schemaInfo) {
+              for (const [key, value] of Object.entries(fragment.requires)) {
+                validateStateValueAgainstSchema(
+                  key,
+                  value,
+                  fragmentLabel,
+                  "requires",
+                  schemaInfo,
+                  usedLegacyKeys,
+                  addError,
+                );
+              }
+            }
+          }
+
+          if (fragment.requires_any !== undefined) {
+            if (!Array.isArray(fragment.requires_any) || fragment.requires_any.length === 0) {
+              addError(
+                "INVALID_REQUIREMENT_ALTERNATIVES",
+                `${fragmentLabel} requires_any must be a non-empty array of state maps.`,
+              );
+            } else {
+              fragment.requires_any.forEach((alternative, alternativeIndex) => {
+                const alternativeKind = `requires_any[${alternativeIndex}]`;
+                const valid = validateStateMap(
+                  alternative,
+                  fragmentLabel,
+                  alternativeKind,
+                  addError,
+                );
+                if (valid && schemaInfo) {
+                  for (const [key, value] of Object.entries(alternative)) {
+                    validateStateValueAgainstSchema(
+                      key,
+                      value,
+                      fragmentLabel,
+                      alternativeKind,
+                      schemaInfo,
+                      usedLegacyKeys,
+                      addError,
+                    );
+                  }
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+
     const validChoices = [];
     node.choices.forEach((choice, choiceIndex) => {
       choiceCount += 1;

@@ -105,6 +105,16 @@ function choiceIsAvailable(choice, values) {
   return requiredStateMatches && alternativeStateMatches;
 }
 
+function applyChoiceEffects(values, effects = {}) {
+  const nextValues = { ...values };
+  for (const [key, value] of Object.entries(effects)) {
+    nextValues[key] = typeof value === "number"
+      ? (Number(nextValues[key]) || 0) + value
+      : value;
+  }
+  return nextValues;
+}
+
 test("accepts a state-gated route that reaches an ending", async () => {
   const story = {
     chapter: "Test Chapter",
@@ -152,6 +162,55 @@ test("accepts a choice when any alternative requirement group matches", async ()
 
   const result = await validate(story, { stateSchema });
   assert.deepEqual(result.errors, []);
+});
+
+test("accepts state-aware ending text with validated requirement groups", async () => {
+  const stateSchema = schema("Remembered Ending", {
+    cost: {
+      type: "enum",
+      values: ["mercy", "pursuit"],
+      description: "The cost remembered by the ending.",
+    },
+  });
+  const story = {
+    chapter: "Remembered Ending",
+    nodes: [
+      node("start", [{ text: "Pay the cost.", next: "ending", effects: { cost: "pursuit" } }]),
+      node("ending", [], {
+        ending: "THE END",
+        conditional_text: [{
+          group: "cost",
+          text: "The pursuit begins.",
+          requires: { cost: "pursuit" },
+        }],
+      }),
+    ],
+  };
+
+  const result = await validate(story, { stateSchema });
+  assert.deepEqual(result.errors, []);
+});
+
+test("reports malformed state-aware ending text", async () => {
+  const story = {
+    chapter: "Malformed Ending",
+    nodes: [
+      node("start", [{ text: "Finish.", next: "ending" }]),
+      node("ending", [], {
+        ending: "THE END",
+        conditional_text: [
+          { group: "", text: "", requires_any: [] },
+          { group: "cost", text: "An unconditioned cost." },
+        ],
+      }),
+    ],
+  };
+
+  const codes = errorCodes(await validate(story));
+  assert(codes.has("MISSING_CONDITIONAL_GROUP"));
+  assert(codes.has("MISSING_CONDITIONAL_TEXT"));
+  assert(codes.has("INVALID_REQUIREMENT_ALTERNATIVES"));
+  assert(codes.has("MISSING_CONDITIONAL_REQUIREMENT"));
 });
 
 test("reports missing and duplicate ids, broken links, and unreachable nodes", async () => {
@@ -441,6 +500,26 @@ test("Chapter One final oath gates custodians without removing the fire ending",
     new Set(["refugees_detained", "soldier_refusal", "refugees_injured", "gate_riot"]),
   );
 
+  const endingExpectations = new Map([
+    ["ch01_ending_quiet_record", {
+      identity: "sanctioned_accomplice",
+      groups: new Set(["evidence_custody", "meret_terms", "tavin_fate", "sella_terms", "civilian_cost"]),
+    }],
+    ["ch01_ending_debt_in_rain", {
+      identity: "hunted_witness_keeper",
+      groups: new Set(["evidence_custody", "route_gap", "testimony", "sella_terms", "civilian_cost"]),
+    }],
+    ["ch01_ending_merchants_price", {
+      identity: "broker_network_debtor",
+      groups: new Set(["evidence_custody", "route_gap", "sella_terms", "tavin_fate", "civilian_cost"]),
+    }],
+    ["ch01_ending_fire_keeps", {
+      identity: "crown_marked_destroyer",
+      groups: new Set(["evidence_custody", "testimony", "sella_terms", "tavin_fate", "civilian_cost"]),
+    }],
+  ]);
+  const checkedEndingStates = new Set();
+
   for (const values of oathArrivals) {
     for (const key of endingInvariant.preserve) {
       assert(Object.hasOwn(values, key), `Final oath lost required state ${key}.`);
@@ -450,12 +529,56 @@ test("Chapter One final oath gates custodians without removing the fire ending",
         .filter((choice) => choiceIsAvailable(choice, values))
         .map(({ next }) => next),
     );
-    assert(availableDestinations.has("ash_ending"), "Destroying the case must remain the fallback ending.");
+    assert(
+      availableDestinations.has("ch01_ending_fire_keeps"),
+      "Destroying the case must remain the fallback ending.",
+    );
     if (values.evidence_distribution === "split") {
       assert.deepEqual(
         availableDestinations,
-        new Set(["authority_ending", "free_ending", "merchant_ending", "ash_ending"]),
+        new Set([
+          "ch01_ending_quiet_record",
+          "ch01_ending_debt_in_rain",
+          "ch01_ending_merchants_price",
+          "ch01_ending_fire_keeps",
+        ]),
       );
     }
+
+    for (const choice of oathNode.choices.filter((item) => choiceIsAvailable(item, values))) {
+      const endingNode = chapter.nodes.find(({ id }) => id === choice.next);
+      const expectation = endingExpectations.get(choice.next);
+      assert(endingNode, `Ending ${choice.next} must exist.`);
+      assert(expectation, `Ending ${choice.next} must declare its expected consequence groups.`);
+
+      const endingValues = applyChoiceEffects(values, choice.effects);
+      assert.equal(endingValues.chapter_two_identity, expectation.identity);
+      const fragmentKeys = new Set(
+        endingNode.conditional_text.flatMap((fragment) => [
+          ...Object.keys(fragment.requires || {}),
+          ...(fragment.requires_any || []).flatMap((requirements) => Object.keys(requirements)),
+        ]),
+      );
+      const endingSignature = JSON.stringify([
+        choice.next,
+        ...[...fragmentKeys].sort().map((key) => [key, endingValues[key]]),
+      ]);
+      if (checkedEndingStates.has(endingSignature)) continue;
+      checkedEndingStates.add(endingSignature);
+
+      const matchedFragments = endingNode.conditional_text.filter(
+        (fragment) => choiceIsAvailable(fragment, endingValues),
+      );
+      const groupCounts = matchedFragments.reduce((counts, { group }) => {
+        counts.set(group, (counts.get(group) || 0) + 1);
+        return counts;
+      }, new Map());
+      assert.deepEqual(new Set(groupCounts.keys()), expectation.groups);
+      for (const [group, count] of groupCounts) {
+        assert.equal(count, 1, `${choice.next} matched ${count} fragments in group ${group}.`);
+      }
+    }
   }
+
+  assert(checkedEndingStates.size > 0);
 });

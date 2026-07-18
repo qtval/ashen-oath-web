@@ -56,14 +56,15 @@ Completed so far:
 - [x] Define Garren Vale's voice, contradiction, and arc for this chapter
 - [x] Finalize Captain Meret, Tavin, and Sella Venn: goals, secrets, loyalties, and breaking points
 - [x] Establish the Red Hollow mystery and the sealed-letter evidence trail
-- [ ] Replace placeholder routes with deliberate branches and reconvergences
-- [ ] Ensure each route contains at least one delayed consequence
+- [x] Replace placeholder routes with deliberate branches and reconvergences
+- [x] Ensure each route contains at least one delayed consequence
 - [x] Write 3-5 distinct Chapter One endings that state the cost, not a win/lose result
 - [x] Add automated validation for broken links, missing art references, invalid requirements, reachability, and ending paths
 - [x] Define the Chapter One story-state schema, evidence custody values, and reconvergence invariants
 - [x] Replace the prototype opening with beat-sheet Scenes 1-6 through the first lockdown reconvergence
 - [x] Replace the prototype investigation window with beat-sheet Scenes 7-11 through the evidence-assembly reconvergence
 - [x] Implement beat-sheet Scenes 12-14: evidence distribution, checkpoint crisis, and the open-gate ending choice
+- [x] Replace the temporary endpoints with branch-sensitive beat-sheet Scenes 15-18
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
 
@@ -178,6 +179,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Replace the four temporary ending nodes with beat-sheet Scenes 15-18.**
+**Run a timed Chapter One route and continuity audit.**
 
-Write branch-sensitive versions of The Quiet Record, A Debt in the Rain, The Merchant's Price, and What the Fire Keeps. Each ending must name the cost paid by surviving people, proof, promises, and public harm; preserve exact custody; set Garren's Chapter Two identity; and remove the remaining temporary endpoint prose without restoring missing evidence.
+Measure a first playthrough and representative replays against the 20-30 minute target, then audit all four investigation routes for contradictions, unclear evidence custody, missing context, weak delayed consequences, and situation changes that need distinct panel briefs. Record a prioritized correction list before polishing dialogue or producing final panels.

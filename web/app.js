@@ -15,6 +15,15 @@ function canChoose(choice) {
   return requiredStateMatches && alternativeStateMatches;
 }
 
+function nodeText(node) {
+  const rememberedText = (node.conditional_text || [])
+    .filter(canChoose)
+    .map(({ text }) => text);
+  return [node.text, ...rememberedText]
+    .map((text, index) => `<p class="text${index === 0 ? "" : " remembered"}">${text}</p>`)
+    .join("");
+}
+
 function applyEffects(effects = {}) {
   for (const [key, value] of Object.entries(effects)) {
     state.values[key] = typeof value === "number" ? (Number(state.values[key]) || 0) + value : value;
@@ -60,12 +69,13 @@ function render() {
         </nav>
       </header>
       <div class="story-content">
+        ${ending ? `<section class="ending" aria-label="Ending"><h1>${node.ending}</h1>` : ""}
         <article class="dialogue">
           <p class="speaker">${node.speaker || "Narration"}</p>
-          <p class="text">${node.text}</p>
+          ${nodeText(node)}
         </article>
         ${ending
-          ? `<section class="ending" aria-label="Ending"><h1>${node.ending}</h1><p>The road continues, but this chapter ends here.</p><button class="restart" id="ending-restart" type="button">Begin again</button></section>`
+          ? `<p class="ending-close">The road continues, but this chapter ends here.</p><button class="restart" id="ending-restart" type="button">Begin again</button></section>`
           : `<div class="choices" role="group" aria-label="Choices">${choices}</div>`}
       </div>
       <footer class="footer"><span>${chapter.chapter}</span><span>Decision ${state.history.length + 1}</span></footer>
