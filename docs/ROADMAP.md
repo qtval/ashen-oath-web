@@ -30,6 +30,7 @@ Completed so far:
 - JSON-driven branching story reader with local saves and restart
 - Opening checkpoint narrative prototype with hidden state and endings
 - First full-screen monochrome atmospheric-panel direction
+- Repository-wide text-encoding validation to prevent corrupted punctuation
 
 ## Milestone 0.2 - Immersive visual-novel reader
 
