@@ -17,6 +17,7 @@
 4. **Characters are people, not quest dispensers.** Every major character has a public goal, a private fear, a self-deception, and a breaking point.
 5. **Mobile is the primary screen.** Portrait layout, one-thumb controls, legible type, fast resume, and calm interruption handling are requirements, not polish.
 6. **Original work only.** We may learn from great grim fantasy and narrative games, but we do not copy their characters, plots, dialogue, factions, or visual identities.
+7. **Web game first, Android last.** We design and test for phone screens throughout development, but we do not package or ship the Android app until the complete browser game has passed full-game testing and content lock.
 
 ## Current status
 
@@ -90,42 +91,73 @@ Completed so far:
 
 **Done when:** players understand the game's identity, stay engaged for an hour, and can describe a decision that felt personally theirs.
 
-## Milestone 0.6 - Quality and production readiness
+## Milestone 0.6 - Full-game blueprint and production readiness
 
-**Purpose:** Make the vertical slice reliable enough to share widely.
+**Purpose:** Turn the successful vertical slice into a deliberately scoped plan for the complete game.
 
-- [ ] Test portrait layouts across common phone widths and text-size settings
-- [ ] Test offline loading, refresh, interrupted sessions, corrupted saves, and new saves
+- [ ] Define the target playtime, chapter count, principal routes, and ending structure
+- [ ] Complete the full-story beat sheet and consequence map before drafting every scene
+- [ ] Finalize the essential cast, factions, locations, lore boundaries, and character arcs
+- [ ] Establish the repeatable writing, story-data, artwork, sound, validation, and review pipeline
+- [ ] Test offline loading, refresh, interrupted sessions, corrupted saves, and save migration
 - [ ] Add loading, missing-art, and missing-story fallback states
-- [ ] Improve performance: image compression, lazy loading, and transition memory limits
-- [ ] Add content notes and accessibility review
-- [ ] Establish a release checklist, version number, and changelog discipline
+- [ ] Establish version numbers, changelog discipline, content notes, and accessibility standards
 
-**Done when:** the web build is stable, usable, and understandable without developer help.
+**Done when:** the complete game has a controlled scope, coherent narrative plan, reliable production pipeline, and no unresolved structural questions that would force major rewrites later.
 
-## Milestone 0.7 - Android test build
+## Milestone 0.7 - Full-game production
 
-**Purpose:** Package the stable web game for physical Android testing.
+**Purpose:** Write, implement, illustrate, and score the complete game in the browser build.
 
-- [ ] Choose the packaging path after the web slice is proven (likely Capacitor)
-- [ ] Create Android project and signing plan; never store keys in the repository
-- [ ] Test touch, Android back behaviour, safe areas, performance, save persistence, and audio focus
-- [ ] Produce an internal APK/AAB test build
-- [ ] Prepare store assets: icon, screenshots, feature graphic, description, privacy policy, content rating
+- [ ] Write and implement every planned chapter
+- [ ] Complete all principal routes, reconvergences, delayed consequences, and endings
+- [ ] Integrate final environment panels, sound design, music, and interface presentation
+- [ ] Maintain character, lore, geography, chronology, and consequence continuity across the full story
+- [ ] Replace all temporary story, artwork, audio, and interface placeholders
+- [ ] Validate every chapter and complete every reachable route in the browser build
 
-**Done when:** the same vertical slice works reliably on real Android phones and is ready for closed testing.
+**Done when:** the entire intended game is playable from beginning to ending in the browser, with final content rather than prototype placeholders.
 
-## Milestone 0.8 - Closed test and launch preparation
+## Milestone 0.8 - Full-game beta, polish, and content lock
 
-**Purpose:** Validate that strangers understand and enjoy the game.
+**Purpose:** Prove that the complete game is finished before any Android packaging begins.
 
-- [ ] Recruit closed-test players who were not involved in development
-- [ ] Track completion, choice use, return sessions, technical failures, and feedback
-- [ ] Prioritize fixes by player impact, not feature novelty
-- [ ] Finalize pricing or monetization only after the core game is enjoyable
-- [ ] Prepare a first public release scope that does not promise more than we can support
+- [ ] Recruit outside players who were not involved in development
+- [ ] Test complete playthroughs, endings, save migration, refresh, interruption, and recovery
+- [ ] Test portrait layouts across common phone widths, devices, and text-size settings
+- [ ] Complete accessibility, proofreading, performance, image compression, and audio balancing passes
+- [ ] Record and fix confusion, pacing problems, continuity errors, technical failures, and weak choices
+- [ ] Remove all release-blocking defects and explicitly lock the story and asset scope
+- [ ] Create a final browser release candidate and complete the full-game release checklist
 
-**Done when:** the game has a stable, enjoyable, honest first release plan.
+**Done when:** the complete browser game has passed external playtesting, contains no known release blockers or placeholders, and is formally content-locked.
+
+## Milestone 0.9 - Android packaging and device verification
+
+**Entry gate:** This milestone cannot begin until Milestone 0.8 is complete and the full game is content-locked.
+
+**Purpose:** Package the finished browser game for Android without changing its product scope.
+
+- [ ] Choose the final packaging path based on the finished game's requirements
+- [ ] Create the Android project and signing plan; never store signing keys in the repository
+- [ ] Test Android back behaviour, safe areas, performance, save persistence, installation, updates, and audio focus
+- [ ] Fix platform-specific defects without introducing new game features or story scope
+- [ ] Produce internal APK and Android App Bundle release candidates
+
+**Done when:** the packaged Android game faithfully matches the locked browser release and works reliably on representative physical Android phones.
+
+## Milestone 1.0 - Google Play closed test and launch preparation
+
+**Purpose:** Validate the finished Android package and prepare an honest public release.
+
+- [ ] Run a Google Play closed test with outside players
+- [ ] Track completion, return sessions, crashes, technical failures, and player feedback
+- [ ] Fix release-blocking Android defects and reverify the locked game
+- [ ] Prepare the icon, screenshots, feature graphic, description, privacy policy, and content rating
+- [ ] Finalize pricing or monetization only after the complete game is enjoyable
+- [ ] Approve the final release candidate and store listing
+
+**Done when:** the finished game has a stable Android release candidate and a complete, accurate Google Play submission.
 
 ## Explicitly deferred
 
@@ -137,7 +169,8 @@ These are not current work:
 - Ads, battle passes, or aggressive monetization
 - Character creator
 - Multiple playable protagonists before Garren's first arc works
-- iOS release until Android and the web slice are proven
+- Android packaging, signing, APK/AAB creation, and store work until the complete browser game is content-locked
+- iOS release until the finished Android release is proven
 
 ## Immediate next task
 
