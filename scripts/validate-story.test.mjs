@@ -42,6 +42,51 @@ function errorCodes(result) {
   return new Set(result.errors.map(({ code }) => code));
 }
 
+async function loadChapterOne() {
+  const chapter = JSON.parse(await readFile(
+    new URL("../data/chapters/chapter_01.json", import.meta.url),
+    "utf8",
+  ));
+  const stateSchema = JSON.parse(await readFile(
+    new URL("../data/schemas/chapter_01_state.json", import.meta.url),
+    "utf8",
+  ));
+  return { chapter, stateSchema };
+}
+
+function statesArrivingAt(chapter, targetNodeId) {
+  const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
+  const queue = [{ nodeId: chapter.nodes[0].id, values: {} }];
+  const arrivals = [];
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (current.nodeId === targetNodeId) {
+      arrivals.push(current.values);
+      continue;
+    }
+
+    const storyNode = nodes.get(current.nodeId);
+    assert(storyNode, `Route points to missing node ${current.nodeId}.`);
+    for (const choice of storyNode.choices) {
+      const available = !choice.requires || Object.entries(choice.requires).every(
+        ([key, expected]) => current.values[key] === expected,
+      );
+      if (!available) continue;
+
+      const values = { ...current.values };
+      for (const [key, value] of Object.entries(choice.effects || {})) {
+        values[key] = typeof value === "number"
+          ? (Number(values[key]) || 0) + value
+          : value;
+      }
+      queue.push({ nodeId: choice.next, values });
+    }
+  }
+
+  return arrivals;
+}
+
 test("accepts a state-gated route that reaches an ending", async () => {
   const story = {
     chapter: "Test Chapter",
@@ -211,45 +256,11 @@ test("accepts legacy keys but reports them for migration", async () => {
 });
 
 test("Chapter One opening preserves every lockdown invariant across all branches", async () => {
-  const chapter = JSON.parse(await readFile(
-    new URL("../data/chapters/chapter_01.json", import.meta.url),
-    "utf8",
-  ));
-  const stateSchema = JSON.parse(await readFile(
-    new URL("../data/schemas/chapter_01_state.json", import.meta.url),
-    "utf8",
-  ));
+  const { chapter, stateSchema } = await loadChapterOne();
   const lockdownInvariant = stateSchema.reconvergence_invariants.find(
     ({ scene }) => scene === "ch01_bell_and_bar",
   );
-  const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
-  const queue = [{ nodeId: chapter.nodes[0].id, values: {} }];
-  const lockdownArrivals = [];
-
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (current.nodeId === "ch01_bell_and_bar") {
-      lockdownArrivals.push(current.values);
-      continue;
-    }
-
-    const storyNode = nodes.get(current.nodeId);
-    assert(storyNode, `Opening route points to missing node ${current.nodeId}.`);
-    for (const choice of storyNode.choices) {
-      const available = !choice.requires || Object.entries(choice.requires).every(
-        ([key, expected]) => current.values[key] === expected,
-      );
-      if (!available) continue;
-
-      const values = { ...current.values };
-      for (const [key, value] of Object.entries(choice.effects || {})) {
-        values[key] = typeof value === "number"
-          ? (Number(values[key]) || 0) + value
-          : value;
-      }
-      queue.push({ nodeId: choice.next, values });
-    }
-  }
+  const lockdownArrivals = statesArrivingAt(chapter, "ch01_bell_and_bar");
 
   assert(lockdownInvariant, "The lockdown invariant must remain declared in the state schema.");
   assert.equal(lockdownArrivals.length, 108);
@@ -275,4 +286,50 @@ test("Chapter One opening preserves every lockdown invariant across all branches
     new Set(lockdownArrivals.map(({ public_method: value }) => value)),
     new Set(["restraint", "deception", "coercion"]),
   );
+});
+
+test("Chapter One investigation routes preserve exact evidence gaps at assembly", async () => {
+  const { chapter, stateSchema } = await loadChapterOne();
+  const assemblyInvariant = stateSchema.reconvergence_invariants.find(
+    ({ scene }) => scene === "ch01_three_hands",
+  );
+  const assemblyArrivals = statesArrivingAt(chapter, "ch01_three_hands");
+
+  assert(assemblyInvariant, "The evidence-assembly invariant must remain declared.");
+  assert.equal(assemblyArrivals.length, 6480);
+  assert.deepEqual(
+    new Set(assemblyArrivals.map(({ investigation_route: value }) => value)),
+    new Set(["records", "witness", "merchant", "authority"]),
+  );
+
+  for (const values of assemblyArrivals) {
+    for (const key of assemblyInvariant.preserve) {
+      assert(Object.hasOwn(values, key), `Evidence assembly lost required state ${key}.`);
+    }
+    assert.equal(values.evidence_distribution, "unassembled");
+
+    if (values.investigation_route === "records") {
+      assert.notEqual(values.ration_folio_status, "unseen");
+      assert.notEqual(values.tavin_testimony, "unheard");
+      assert.equal(values.courier_strap_status, "hidden_with_sella");
+      assert.equal(values.search_warrant_status, "unseen");
+      assert.equal(values.sella_tip_known, false);
+    } else if (values.investigation_route === "witness") {
+      assert.equal(values.ration_folio_status, "unseen");
+      assert.notEqual(values.tavin_testimony, "unheard");
+      assert.equal(values.search_warrant_status, "unseen");
+      assert.equal(values.sella_tip_known, true);
+    } else if (values.investigation_route === "merchant") {
+      assert.equal(values.ration_folio_status, "unseen");
+      assert.equal(values.tavin_testimony, "unheard");
+      assert.notEqual(values.search_warrant_status, "unseen");
+      assert.equal(values.sella_tip_known, true);
+    } else if (values.investigation_route === "authority") {
+      assert.notEqual(values.ration_folio_status, "unseen");
+      assert.equal(values.tavin_testimony, "unheard");
+      assert.equal(values.courier_strap_status, "hidden_with_sella");
+      assert.notEqual(values.search_warrant_status, "unseen");
+      assert.equal(values.sella_tip_known, false);
+    }
+  }
 });

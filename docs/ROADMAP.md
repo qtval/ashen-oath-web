@@ -62,6 +62,7 @@ Completed so far:
 - [x] Add automated validation for broken links, missing art references, invalid requirements, reachability, and ending paths
 - [x] Define the Chapter One story-state schema, evidence custody values, and reconvergence invariants
 - [x] Replace the prototype opening with beat-sheet Scenes 1-6 through the first lockdown reconvergence
+- [x] Replace the prototype investigation window with beat-sheet Scenes 7-11 through the evidence-assembly reconvergence
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
 
@@ -176,6 +177,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Replace the prototype investigation window with beat-sheet Scenes 7-11, stopping at the evidence-assembly reconvergence.**
+**Implement beat-sheet Scenes 12-14 from evidence distribution through the ending choice.**
 
-Implement the search table, route selection, crossed-out ration folio, Tavin's full account, Sella's false floor, and Meret's private warrant disclosure. Set `investigation_route`, update exact evidence custody, and carry every missing proof and relationship consequence into `ch01_three_hands` without restoring evidence off-page.
+Replace the temporary post-assembly bridge with the custody decision, the superior's order and checkpoint crisis, and Garren's open-gate oath. Pay off each character's breaking point, set `evidence_distribution` and `civilian_cost`, preserve exact surviving custody, and make ending availability reflect relationships, promises, and public harm without restoring missing proof.
