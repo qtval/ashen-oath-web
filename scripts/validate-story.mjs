@@ -28,9 +28,14 @@ function stateKey(nodeId, values) {
   return `${nodeId}\u0000${JSON.stringify(orderedValues)}`;
 }
 
-function requirementsMatch(values, requirements) {
-  return !requirements
+function requirementsMatch(values, requirements, alternatives) {
+  const requiredStateMatches = !requirements
     || Object.entries(requirements).every(([key, expected]) => values[key] === expected);
+  const alternativeStateMatches = !alternatives
+    || alternatives.some((requirement) => Object.entries(requirement).every(
+      ([key, expected]) => values[key] === expected,
+    ));
+  return requiredStateMatches && alternativeStateMatches;
 }
 
 function applyEffects(values, effects, trackedKeys) {
@@ -390,7 +395,9 @@ export async function validateStoryData(story, options = {}) {
       }
 
       let requirementsAreValid = true;
+      let hasRequirements = false;
       if (choice.requires !== undefined) {
+        hasRequirements = true;
         requirementsAreValid = validateStateMap(choice.requires, choiceLabel, "requires", addError);
         if (requirementsAreValid && schemaInfo) {
           for (const [key, value] of Object.entries(choice.requires)) {
@@ -408,6 +415,47 @@ export async function validateStoryData(story, options = {}) {
         if (isPlainObject(choice.requires)) {
           Object.keys(choice.requires).forEach((key) => requiredStateKeys.add(key));
         }
+      }
+
+      if (choice.requires_any !== undefined) {
+        hasRequirements = true;
+        if (!Array.isArray(choice.requires_any) || choice.requires_any.length === 0) {
+          addError(
+            "INVALID_REQUIREMENT_ALTERNATIVES",
+            `${choiceLabel} requires_any must be a non-empty array of state maps.`,
+          );
+          requirementsAreValid = false;
+        } else {
+          for (const [alternativeIndex, alternative] of choice.requires_any.entries()) {
+            const alternativeKind = `requires_any[${alternativeIndex}]`;
+            let alternativeIsValid = validateStateMap(
+              alternative,
+              choiceLabel,
+              alternativeKind,
+              addError,
+            );
+            if (alternativeIsValid && schemaInfo) {
+              for (const [key, value] of Object.entries(alternative)) {
+                alternativeIsValid = validateStateValueAgainstSchema(
+                  key,
+                  value,
+                  choiceLabel,
+                  alternativeKind,
+                  schemaInfo,
+                  usedLegacyKeys,
+                  addError,
+                ) && alternativeIsValid;
+              }
+            }
+            if (isPlainObject(alternative)) {
+              Object.keys(alternative).forEach((key) => requiredStateKeys.add(key));
+            }
+            requirementsAreValid = alternativeIsValid && requirementsAreValid;
+          }
+        }
+      }
+
+      if (hasRequirements) {
         requirementChoices.push({
           id: `${node.id || nodeIndex}:${choiceIndex}`,
           nodeId: node.id,
@@ -541,9 +589,9 @@ export async function validateStoryData(story, options = {}) {
       for (const choiceRecord of nodeChoices.get(currentState.nodeId) || []) {
         const { choice, choiceIndex, runtimeValid } = choiceRecord;
         if (!runtimeValid || !nodeById.has(choice.next)) continue;
-        if (!requirementsMatch(currentState.values, choice.requires)) continue;
+        if (!requirementsMatch(currentState.values, choice.requires, choice.requires_any)) continue;
 
-        if (choice.requires !== undefined) {
+        if (choice.requires !== undefined || choice.requires_any !== undefined) {
           availableRequirementChoices.add(`${currentState.nodeId}:${choiceIndex}`);
         }
 

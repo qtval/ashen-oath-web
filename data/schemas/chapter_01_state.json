@@ -67,22 +67,22 @@
     },
     "orl_packet_status": {
       "type": "enum",
-      "values": ["with_garren", "with_meret", "with_sella", "distributed", "burned", "lost"],
+      "values": ["with_garren", "with_meret", "with_tavin", "with_sella", "distributed", "burned", "lost"],
       "description": "Custody of Captain Orl's sealed packet and pressure-copy."
     },
     "ration_folio_status": {
       "type": "enum",
-      "values": ["unseen", "original_stolen", "copied", "memorized", "with_meret", "destroyed"],
+      "values": ["unseen", "original_stolen", "copied", "memorized", "with_meret", "with_tavin", "with_sella", "distributed", "destroyed"],
       "description": "The form and custody of the crossed-out supply evidence."
     },
     "courier_strap_status": {
       "type": "enum",
-      "values": ["hidden_with_sella", "with_garren", "with_meret", "traded", "lost"],
+      "values": ["hidden_with_sella", "with_garren", "with_meret", "with_tavin", "with_sella", "distributed", "traded", "lost"],
       "description": "Custody of the stamped strap that corroborates the countermand courier."
     },
     "search_warrant_status": {
       "type": "enum",
-      "values": ["unseen", "copied", "with_meret", "repudiated", "sent_on", "burned"],
+      "values": ["unseen", "copied", "with_meret", "with_tavin", "with_sella", "distributed", "repudiated", "sent_on", "burned"],
       "description": "Custody and public status of the active cover-up warrant."
     },
     "evidence_distribution": {

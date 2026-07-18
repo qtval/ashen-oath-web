@@ -63,6 +63,7 @@ Completed so far:
 - [x] Define the Chapter One story-state schema, evidence custody values, and reconvergence invariants
 - [x] Replace the prototype opening with beat-sheet Scenes 1-6 through the first lockdown reconvergence
 - [x] Replace the prototype investigation window with beat-sheet Scenes 7-11 through the evidence-assembly reconvergence
+- [x] Implement beat-sheet Scenes 12-14: evidence distribution, checkpoint crisis, and the open-gate ending choice
 
 **Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
 
@@ -177,6 +178,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Implement beat-sheet Scenes 12-14 from evidence distribution through the ending choice.**
+**Replace the four temporary ending nodes with beat-sheet Scenes 15-18.**
 
-Replace the temporary post-assembly bridge with the custody decision, the superior's order and checkpoint crisis, and Garren's open-gate oath. Pay off each character's breaking point, set `evidence_distribution` and `civilian_cost`, preserve exact surviving custody, and make ending availability reflect relationships, promises, and public harm without restoring missing proof.
+Write branch-sensitive versions of The Quiet Record, A Debt in the Rain, The Merchant's Price, and What the Fire Keeps. Each ending must name the cost paid by surviving people, proof, promises, and public harm; preserve exact custody; set Garren's Chapter Two identity; and remove the remaining temporary endpoint prose without restoring missing evidence.

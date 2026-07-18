@@ -6,7 +6,13 @@ let state;
 const freshState = () => ({ version: 1, nodeId: null, values: {}, history: [] });
 
 function canChoose(choice) {
-  return !choice.requires || Object.entries(choice.requires).every(([key, expected]) => state.values[key] === expected);
+  const requiredStateMatches = !choice.requires
+    || Object.entries(choice.requires).every(([key, expected]) => state.values[key] === expected);
+  const alternativeStateMatches = !choice.requires_any
+    || choice.requires_any.some((requirements) => Object.entries(requirements).every(
+      ([key, expected]) => state.values[key] === expected,
+    ));
+  return requiredStateMatches && alternativeStateMatches;
 }
 
 function applyEffects(effects = {}) {

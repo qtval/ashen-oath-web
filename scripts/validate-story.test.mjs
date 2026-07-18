@@ -69,9 +69,15 @@ function statesArrivingAt(chapter, targetNodeId) {
     const storyNode = nodes.get(current.nodeId);
     assert(storyNode, `Route points to missing node ${current.nodeId}.`);
     for (const choice of storyNode.choices) {
-      const available = !choice.requires || Object.entries(choice.requires).every(
+      const requiredStateMatches = !choice.requires || Object.entries(choice.requires).every(
         ([key, expected]) => current.values[key] === expected,
       );
+      const alternativeStateMatches = !choice.requires_any || choice.requires_any.some(
+        (requirements) => Object.entries(requirements).every(
+          ([key, expected]) => current.values[key] === expected,
+        ),
+      );
+      const available = requiredStateMatches && alternativeStateMatches;
       if (!available) continue;
 
       const values = { ...current.values };
@@ -85,6 +91,18 @@ function statesArrivingAt(chapter, targetNodeId) {
   }
 
   return arrivals;
+}
+
+function choiceIsAvailable(choice, values) {
+  const requiredStateMatches = !choice.requires || Object.entries(choice.requires).every(
+    ([key, expected]) => values[key] === expected,
+  );
+  const alternativeStateMatches = !choice.requires_any || choice.requires_any.some(
+    (requirements) => Object.entries(requirements).every(
+      ([key, expected]) => values[key] === expected,
+    ),
+  );
+  return requiredStateMatches && alternativeStateMatches;
 }
 
 test("accepts a state-gated route that reaches an ending", async () => {
@@ -106,6 +124,34 @@ test("accepts a state-gated route that reaches an ending", async () => {
   assert.equal(result.summary.nodes, 3);
   assert.equal(result.summary.endings, 1);
   assert.equal(result.summary.stateKeys, 1);
+});
+
+test("accepts a choice when any alternative requirement group matches", async () => {
+  const stateSchema = schema("Alternative Routes", {
+    route: {
+      type: "enum",
+      values: ["records", "witness"],
+      description: "The selected route.",
+    },
+  });
+  const story = {
+    chapter: "Alternative Routes",
+    nodes: [
+      node("start", [
+        { text: "Take records.", next: "gate", effects: { route: "records" } },
+        { text: "Take a witness.", next: "gate", effects: { route: "witness" } },
+      ]),
+      node("gate", [{
+        text: "Continue either route.",
+        next: "ending",
+        requires_any: [{ route: "records" }, { route: "witness" }],
+      }]),
+      node("ending", [], { ending: "THE END" }),
+    ],
+  };
+
+  const result = await validate(story, { stateSchema });
+  assert.deepEqual(result.errors, []);
 });
 
 test("reports missing and duplicate ids, broken links, and unreachable nodes", async () => {
@@ -135,6 +181,17 @@ test("reports invalid and unsatisfiable requirements", async () => {
     ],
   };
   assert(errorCodes(await validate(invalidStory)).has("INVALID_STATE_VALUE"));
+
+  const invalidAlternativesStory = {
+    chapter: "Invalid Alternatives",
+    nodes: [
+      node("start", [{ text: "Impossible.", next: "ending", requires_any: [] }]),
+      node("ending", [], { ending: "THE END" }),
+    ],
+  };
+  assert(
+    errorCodes(await validate(invalidAlternativesStory)).has("INVALID_REQUIREMENT_ALTERNATIVES"),
+  );
 
   const unsatisfiedStory = {
     chapter: "Unsatisfied Requirement",
@@ -296,7 +353,7 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
   const assemblyArrivals = statesArrivingAt(chapter, "ch01_three_hands");
 
   assert(assemblyInvariant, "The evidence-assembly invariant must remain declared.");
-  assert.equal(assemblyArrivals.length, 6480);
+  assert.equal(assemblyArrivals.length, 32400);
   assert.deepEqual(
     new Set(assemblyArrivals.map(({ investigation_route: value }) => value)),
     new Set(["records", "witness", "merchant", "authority"]),
@@ -306,7 +363,7 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
     for (const key of assemblyInvariant.preserve) {
       assert(Object.hasOwn(values, key), `Evidence assembly lost required state ${key}.`);
     }
-    assert.equal(values.evidence_distribution, "unassembled");
+    assert.notEqual(values.evidence_distribution, "unassembled");
 
     if (values.investigation_route === "records") {
       assert.notEqual(values.ration_folio_status, "unseen");
@@ -330,6 +387,75 @@ test("Chapter One investigation routes preserve exact evidence gaps at assembly"
       assert.equal(values.courier_strap_status, "hidden_with_sella");
       assert.notEqual(values.search_warrant_status, "unseen");
       assert.equal(values.sella_tip_known, false);
+    }
+  }
+});
+
+test("Chapter One crisis preserves custody and pays a remembered civilian cost", async () => {
+  const { chapter, stateSchema } = await loadChapterOne();
+  const crisisInvariant = stateSchema.reconvergence_invariants.find(
+    ({ scene }) => scene === "ch01_clear_the_road",
+  );
+  const crisisArrivals = statesArrivingAt(chapter, "ch01_clear_the_road");
+
+  assert(crisisInvariant, "The checkpoint-crisis invariant must remain declared.");
+  assert.equal(crisisArrivals.length, 32400);
+  assert.deepEqual(
+    new Set(crisisArrivals.map(({ evidence_distribution: value }) => value)),
+    new Set(["consolidated_meret", "consolidated_tavin", "consolidated_sella", "split", "decoy"]),
+  );
+
+  for (const values of crisisArrivals) {
+    for (const key of crisisInvariant.preserve) {
+      assert(Object.hasOwn(values, key), `Checkpoint crisis lost required state ${key}.`);
+    }
+    assert.equal(values.civilian_cost, "none");
+  }
+
+  const crisisNode = chapter.nodes.find(({ id }) => id === "ch01_clear_the_road");
+  assert(crisisNode, "The checkpoint crisis must exist.");
+  assert.deepEqual(
+    new Set(crisisNode.choices.map(({ effects }) => effects.civilian_cost)),
+    new Set(["refugees_detained", "soldier_refusal", "refugees_injured", "gate_riot"]),
+  );
+  assert.equal(
+    crisisNode.choices.find(({ next }) => next === "ch01_clear_the_road_tavin")
+      .requires.approach_intel,
+    "ditch",
+  );
+});
+
+test("Chapter One final oath gates custodians without removing the fire ending", async () => {
+  const { chapter, stateSchema } = await loadChapterOne();
+  const endingInvariant = stateSchema.reconvergence_invariants.find(
+    ({ scene }) => scene === "ch01_open_gate_oath",
+  );
+  const oathNode = chapter.nodes.find(({ id }) => id === "ch01_open_gate_oath");
+  const oathArrivals = statesArrivingAt(chapter, "ch01_open_gate_oath");
+
+  assert(endingInvariant, "The final-oath invariant must remain declared.");
+  assert(oathNode, "The final oath must exist.");
+  assert(oathArrivals.length > 0);
+  assert.deepEqual(
+    new Set(oathArrivals.map(({ civilian_cost: value }) => value)),
+    new Set(["refugees_detained", "soldier_refusal", "refugees_injured", "gate_riot"]),
+  );
+
+  for (const values of oathArrivals) {
+    for (const key of endingInvariant.preserve) {
+      assert(Object.hasOwn(values, key), `Final oath lost required state ${key}.`);
+    }
+    const availableDestinations = new Set(
+      oathNode.choices
+        .filter((choice) => choiceIsAvailable(choice, values))
+        .map(({ next }) => next),
+    );
+    assert(availableDestinations.has("ash_ending"), "Destroying the case must remain the fallback ending.");
+    if (values.evidence_distribution === "split") {
+      assert.deepEqual(
+        availableDestinations,
+        new Set(["authority_ending", "free_ending", "merchant_ending", "ash_ending"]),
+      );
     }
   }
 });
