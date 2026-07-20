@@ -46,7 +46,7 @@ Completed so far:
 - [ ] Confirm the full-screen layout on a real phone and a narrow desktop window
 - [x] Add a gentle scene transition that respects reduced-motion settings
 - [x] Add tap-to-continue pacing for narration before choices appear
-- [ ] Add a compact Settings screen: text size, reduced motion, restart confirmation
+- [x] Add a compact Settings screen: text size, reduced motion, restart confirmation
 - [ ] Add an accessible Chronicle that shows only facts the current protagonist knows
 
 **Done when:** the opening is comfortable to read and control on a phone, visually atmospheric, accessible, and stable after refresh or resume.
@@ -192,6 +192,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Add a compact Settings screen.**
+**Add an accessible Chronicle for known facts.**
 
-Add controls for text size and reduced motion, plus confirmation before restarting an active run. Persist preferences separately from story progress, keep the panel-led presentation uncluttered, and preserve keyboard and screen-reader access. Story expansion remains paused until the demo-fidelity pass is complete.
+Add a compact Chronicle that lists only facts Garren has learned on the current run: people, Red Hollow evidence, promises, and immediate dangers. Derive entries from existing story state without exposing trust scores, concealed motives, unavailable branches, or developer terminology. Preserve keyboard and screen-reader access, and keep story expansion paused until the demo-fidelity pass is complete.

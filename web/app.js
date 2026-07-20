@@ -1,9 +1,36 @@
 const SAVE_KEY = "ashen-oath-web-save-v1";
+const PREFERENCES_KEY = "ashen-oath-web-preferences-v1";
+const TEXT_SIZES = ["normal", "large", "extra-large"];
 const app = document.querySelector("#app");
 let chapter;
 let state;
+let preferences = loadPreferences();
 
 const freshState = () => ({ version: 1, nodeId: null, values: {}, history: [] });
+
+function loadPreferences() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "null");
+    return {
+      version: 1,
+      textSize: TEXT_SIZES.includes(saved?.textSize) ? saved.textSize : "normal",
+      reducedMotion: saved?.reducedMotion === true,
+    };
+  } catch {
+    return { version: 1, textSize: "normal", reducedMotion: false };
+  }
+}
+
+function persistPreferences() {
+  localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+}
+
+function applyPreferences() {
+  document.documentElement.dataset.textSize = preferences.textSize;
+  document.documentElement.classList.toggle("reduce-motion", preferences.reducedMotion);
+}
+
+applyPreferences();
 
 function canChoose(choice) {
   const requiredStateMatches = !choice.requires
@@ -51,6 +78,11 @@ function render() {
   if (!node) return renderError("The story could not find its next scene.");
 
   const ending = Boolean(node.ending);
+  const textSizeOptions = [
+    ["normal", "Normal"],
+    ["large", "Large"],
+    ["extra-large", "Extra large"],
+  ].map(([value, label]) => `<option value="${value}" ${preferences.textSize === value ? "selected" : ""}>${label}</option>`).join("");
   // CSS resolves image URLs relative to web/styles.css, hence the parent path.
   const artPath = node.panel_image || "../assets/panels/checkpoint-rain-v1.png";
   const choices = (node.choices || []).map((choice, index) => {
@@ -64,6 +96,7 @@ function render() {
       <header class="topbar">
         <p class="eyebrow">The Ashen Oath &middot; Chapter One</p>
         <nav class="utility" aria-label="Game controls">
+          <button id="settings" type="button">Settings</button>
           <button id="save" type="button">Save</button>
           <button id="restart" type="button">Restart</button>
         </nav>
@@ -80,13 +113,67 @@ function render() {
             <div class="choices" id="choices" role="group" aria-label="Choices" hidden>${choices}</div>`}
       </div>
       <footer class="footer"><span>${chapter.chapter}</span><span>Decision ${state.history.length + 1}</span></footer>
+      <dialog class="game-dialog" id="settings-dialog" aria-labelledby="settings-title" aria-describedby="settings-description">
+        <form method="dialog" class="dialog-panel">
+          <div class="dialog-heading">
+            <p class="dialog-kicker">Reader</p>
+            <h2 id="settings-title">Settings</h2>
+            <p id="settings-description">Adjust how the chapter is presented. Story progress is saved separately.</p>
+          </div>
+          <label class="setting-control" for="text-size">
+            <span>Text size</span>
+            <select id="text-size" name="text-size">${textSizeOptions}</select>
+          </label>
+          <label class="setting-toggle" for="reduced-motion">
+            <input id="reduced-motion" name="reduced-motion" type="checkbox" ${preferences.reducedMotion ? "checked" : ""} />
+            <span><strong>Reduce motion</strong><small>Stops panel drift and interface transitions. Your device preference is also respected.</small></span>
+          </label>
+          <div class="dialog-actions"><button class="dialog-action" value="done">Done</button></div>
+        </form>
+      </dialog>
+      <dialog class="game-dialog" id="restart-dialog" aria-labelledby="restart-title" aria-describedby="restart-description">
+        <form method="dialog" class="dialog-panel">
+          <div class="dialog-heading">
+            <p class="dialog-kicker">Current run</p>
+            <h2 id="restart-title">Begin again?</h2>
+            <p id="restart-description">Your current Chapter One progress will be replaced. Reader settings will remain unchanged.</p>
+          </div>
+          <div class="dialog-actions">
+            <button class="dialog-action" value="cancel">Keep playing</button>
+            <button class="dialog-action danger" id="confirm-restart" value="restart">Restart chapter</button>
+          </div>
+        </form>
+      </dialog>
     </section>`;
 
+  const settingsDialog = document.querySelector("#settings-dialog");
+  const restartDialog = document.querySelector("#restart-dialog");
+  document.querySelector("#settings")?.addEventListener("click", () => settingsDialog?.showModal());
+  document.querySelector("#text-size")?.addEventListener("change", (event) => {
+    if (!TEXT_SIZES.includes(event.target.value)) return;
+    preferences = { ...preferences, textSize: event.target.value };
+    persistPreferences();
+    applyPreferences();
+  });
+  document.querySelector("#reduced-motion")?.addEventListener("change", (event) => {
+    preferences = { ...preferences, reducedMotion: event.target.checked };
+    persistPreferences();
+    applyPreferences();
+  });
   document.querySelector("#save")?.addEventListener("click", () => {
     persist();
     announce("Progress saved.");
   });
-  document.querySelectorAll("#restart, #ending-restart").forEach((button) => button.addEventListener("click", restart));
+  document.querySelector("#restart")?.addEventListener("click", () => {
+    if (state.history.length === 0 || ending) return restart();
+    restartDialog?.showModal();
+  });
+  document.querySelector("#ending-restart")?.addEventListener("click", restart);
+  document.querySelector("#confirm-restart")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    restartDialog?.close();
+    restart();
+  });
   const story = document.querySelector("#story");
   const continueButton = document.querySelector("#continue");
   const choicesElement = document.querySelector("#choices");
