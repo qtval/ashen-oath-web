@@ -1,6 +1,61 @@
 {
   "chapter": "The Carrion Road",
   "state_schema": "../schemas/chapter_01_state.json",
+  "chronicle": {
+    "empty_text": "Garren has not learned enough to record anything yet.",
+    "sections": [
+      {
+        "id": "people",
+        "title": "People",
+        "entries": [
+          {"id":"garren","text":"Garren Vale is a former Crown military interrogator returning from the failed war."},
+          {"id":"orl","text":"Captain Orl served in Garren's regiment and entrusted him with a sealed packet before dying."},
+          {"id":"tavin","text":"Tavin kept the Red Hollow signal fires. The Crown calls him a deserter; he says the defeat was arranged.","available_from":["ch01_axle_hand"]},
+          {"id":"meret","text":"Captain Meret commands the checkpoint. Discipline and delay are the only authority she can still control.","available_from":["ch01_first_gate_captured","ch01_first_gate","ch01_first_gate_abandoned","ch01_first_gate_bargaining"]},
+          {"id":"sella","text":"Sella Venn is a merchant carrying people beneath her cargo. She needs her wagon and hidden passengers through the gate.","available_from":["ch01_wheel_in_mud_captured","ch01_wheel_in_mud","ch01_wheel_in_mud_abandoned","ch01_wheel_in_mud_bargaining"]}
+        ]
+      },
+      {
+        "id": "evidence",
+        "title": "Red Hollow evidence",
+        "entries": [
+          {"id":"orl-packet","text":"Orl's sealed packet claims the Crown deliberately abandoned Garren's regiment at Red Hollow."},
+          {"id":"search-order","text":"A search order issued before Garren arrived names Tavin, Orl's packet, and the regiment's supply ledgers. Someone expected the evidence to meet here.","available_from":["ch01_bell_and_bar_captured","ch01_bell_and_bar_hidden","ch01_bell_and_bar_abandoned","ch01_bell_and_bar_bargaining","ch01_bell_and_bar"]},
+          {"id":"ration-folio","text":"The ration folio shows the regiment crossed out and its stores moved three days before the battle: evidence of foreknowledge.","available_from":["ch01_crossed_out_dead","ch01_crossed_out_dead_authority"]},
+          {"id":"tavin-account","text":"Tavin says a countermand ordered him to keep the beacon dark for twelve minutes. He lit it too late and fled with knowledge of the order.","available_from":["ch01_twelve_minutes","ch01_twelve_minutes_records"]},
+          {"id":"courier-strap","text":"A stamped courier strap links Tavin's account to the same flawed chain used by the current warrant.","available_from":["ch01_false_floor","ch01_false_floor_witness"]},
+          {"id":"incomplete-case","text":"The surviving proofs support one another, but no route recovered everything. Every missing piece weakens whoever carries the case.","available_from":["ch01_three_hands"]}
+        ]
+      },
+      {
+        "id": "commitments",
+        "title": "Promises and choices",
+        "entries": [
+          {"id":"tavin-captured","text":"Garren surrendered Tavin to Meret's soldiers. Tavin remains a witness behind bars.","requires":{"tavin_status":"captured"}},
+          {"id":"tavin-hidden","text":"Garren hid Tavin beneath Sella's false floor and accepted responsibility for keeping him alive.","requires":{"tavin_status":"hidden"}},
+          {"id":"tavin-abandoned","text":"Garren refused Tavin and left him among the refugees without protection.","requires":{"tavin_status":"abandoned"}},
+          {"id":"tavin-bargaining","text":"Garren demanded more of Tavin's account before offering shelter. Their protection remains a bargain, not trust.","requires":{"tavin_status":"bargaining"}},
+          {"id":"tavin-protected","text":"Garren placed Tavin in Meret's custody for formal testimony and protection.","requires":{"tavin_status":"protected"}},
+          {"id":"tavin-escaped","text":"Garren helped Tavin escape through the flooded culvert. A soldier will be punished for looking away.","requires":{"tavin_status":"escaped"}},
+          {"id":"sella-passage","text":"Garren promised to get Sella's hidden passengers through the gate. The promise is still unpaid.","requires":{"sella_promise":"wagon_passage"}},
+          {"id":"sella-collateral","text":"Garren gave Orl's packet to Sella as collateral for her passengers' passage.","requires":{"sella_promise":"packet_collateral"}},
+          {"id":"sella-binding","text":"Garren renewed Sella's bargain. It remains binding until every hidden passenger is safely through.","requires":{"sella_promise":"binding"}},
+          {"id":"sella-kept","text":"Sella's wagon passed through the gate. Garren kept the promise at a cost paid by people in its path.","requires":{"sella_promise":"kept"}},
+          {"id":"sella-broken","text":"Garren broke his bargain with Sella. She will remember the debt even if the evidence changes hands.","requires":{"sella_promise":"broken"}}
+        ]
+      },
+      {
+        "id": "dangers",
+        "title": "Immediate dangers",
+        "entries": [
+          {"id":"checkpoint","text":"The Crown checkpoint searches veterans twice while refugees wait between cages, mud, and closed roads."},
+          {"id":"hostages-and-war","text":"The Crown is marking Bracken refugee families as hostages. If Orl's proof exposes the truce as a lie, Bracken armies could march within a day.","available_from":["ch01_names_for_the_truce"]},
+          {"id":"dask","text":"Perrin Dask and his daughter are threatened by a false ledger mark. Garren's former interrogation of Dask already destroyed one innocent name.","available_from":["ch01_old_questions"]},
+          {"id":"final-order","text":"The superior's final order demands Tavin's execution, the ledger burned, Sella's wagon seized, and the refugees cleared.","available_from":["ch01_clear_the_road"]}
+        ]
+      }
+    ]
+  },
   "nodes": [
     {"id":"ch01_carrion_road","panel_description":"A wide road descends through black rain toward a timber palisade. Refugees, broken carts, cages, and severe gate towers dwarf the people below.","speaker":"","text":"Three miles from home, Garren Vale reaches a Crown checkpoint crowded with refugees and returning soldiers. He wants to cross without attention. The guards search every veteran twice. Beneath his coat, Garren carries a sealed packet from Captain Orl, an officer from his regiment. Orl said it contains proof that the Crown deliberately sacrificed their men at Red Hollow.","choices":[{"text":"Join the queue and try to pass unnoticed.","next":"ch01_axle_hand","effects":{"approach_intel":"none","orl_packet_status":"with_garren","meret_suspicion":-1,"meret_guilt_named":false,"civilian_pressure":0}},{"text":"Climb the rise to study the checkpoint first.","next":"ch01_muddy_overlook","effects":{"meret_suspicion":1,"meret_guilt_named":false,"civilian_pressure":1}}]},
     {"id":"ch01_muddy_overlook","panel_description":"The checkpoint lies below high muddy grass. Drainage water cuts along the palisade while clerks and soldiers move beneath rain and black pennants.","speaker":"Garren","text":"From the muddy rise, Garren sees two possible advantages. A flooded culvert beneath the wall could hide one man, but not a wagon. At the records awning, a clerk quietly replaces the public notice with a sealed order. Garren has time to study only one before the soldiers notice him.","choices":[{"text":"Remember the culvert as a possible escape.","next":"ch01_axle_hand","effects":{"approach_intel":"ditch","orl_packet_status":"with_garren"}},{"text":"Watch where the clerk carries the sealed orders.","next":"ch01_axle_hand","effects":{"approach_intel":"clerk","orl_packet_status":"with_garren"}}]},

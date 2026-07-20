@@ -289,6 +289,120 @@ function validateStateMap(value, location, kind, addError) {
   return valid;
 }
 
+function validateChronicle(chronicle, nodeById, schemaInfo, usedLegacyKeys, addError) {
+  if (chronicle === undefined) return;
+  if (!isPlainObject(chronicle)) {
+    addError("INVALID_CHRONICLE", "Chronicle must be an object.");
+    return;
+  }
+  if (!hasText(chronicle.empty_text)) {
+    addError("MISSING_CHRONICLE_EMPTY_TEXT", "Chronicle needs non-empty empty_text.");
+  }
+  if (!Array.isArray(chronicle.sections) || chronicle.sections.length === 0) {
+    addError("MISSING_CHRONICLE_SECTIONS", "Chronicle sections must be a non-empty array.");
+    return;
+  }
+
+  const sectionIds = new Set();
+  const entryIds = new Set();
+  chronicle.sections.forEach((section, sectionIndex) => {
+    const sectionLabel = `chronicle section ${sectionIndex + 1}`;
+    if (!isPlainObject(section)) {
+      addError("INVALID_CHRONICLE_SECTION", `${sectionLabel} must be an object.`);
+      return;
+    }
+    if (!hasText(section.id)) {
+      addError("MISSING_CHRONICLE_SECTION_ID", `${sectionLabel} needs a non-empty id.`);
+    } else if (sectionIds.has(section.id)) {
+      addError("DUPLICATE_CHRONICLE_SECTION_ID", `${sectionLabel} repeats id "${section.id}".`);
+    } else {
+      sectionIds.add(section.id);
+    }
+    if (!hasText(section.title)) {
+      addError("MISSING_CHRONICLE_SECTION_TITLE", `${sectionLabel} needs a non-empty title.`);
+    }
+    if (!Array.isArray(section.entries) || section.entries.length === 0) {
+      addError("MISSING_CHRONICLE_ENTRIES", `${sectionLabel} entries must be a non-empty array.`);
+      return;
+    }
+
+    section.entries.forEach((entry, entryIndex) => {
+      const entryLabel = `${sectionLabel}, entry ${entryIndex + 1}`;
+      if (!isPlainObject(entry)) {
+        addError("INVALID_CHRONICLE_ENTRY", `${entryLabel} must be an object.`);
+        return;
+      }
+      if (!hasText(entry.id)) {
+        addError("MISSING_CHRONICLE_ENTRY_ID", `${entryLabel} needs a non-empty id.`);
+      } else if (entryIds.has(entry.id)) {
+        addError("DUPLICATE_CHRONICLE_ENTRY_ID", `${entryLabel} repeats id "${entry.id}".`);
+      } else {
+        entryIds.add(entry.id);
+      }
+      if (!hasText(entry.text)) {
+        addError("MISSING_CHRONICLE_ENTRY_TEXT", `${entryLabel} needs non-empty text.`);
+      }
+
+      if (entry.available_from !== undefined) {
+        if (!Array.isArray(entry.available_from) || entry.available_from.length === 0) {
+          addError(
+            "INVALID_CHRONICLE_VISITS",
+            `${entryLabel} available_from must be a non-empty array of node ids.`,
+          );
+        } else {
+          const visitedIds = new Set();
+          for (const nodeId of entry.available_from) {
+            if (!hasText(nodeId) || !nodeById.has(nodeId)) {
+              addError(
+                "UNKNOWN_CHRONICLE_NODE",
+                `${entryLabel} available_from references unknown node "${nodeId}".`,
+              );
+            } else if (visitedIds.has(nodeId)) {
+              addError(
+                "DUPLICATE_CHRONICLE_NODE",
+                `${entryLabel} available_from repeats node "${nodeId}".`,
+              );
+            }
+            visitedIds.add(nodeId);
+          }
+        }
+      }
+
+      for (const requirementKind of ["requires", "requires_any"]) {
+        const requirement = entry[requirementKind];
+        if (requirement === undefined) continue;
+        const alternatives = requirementKind === "requires_any" ? requirement : [requirement];
+        if (!Array.isArray(alternatives) || alternatives.length === 0) {
+          addError(
+            "INVALID_CHRONICLE_REQUIREMENTS",
+            `${entryLabel} ${requirementKind} must contain state requirements.`,
+          );
+          continue;
+        }
+        alternatives.forEach((stateMap, alternativeIndex) => {
+          const kind = requirementKind === "requires"
+            ? requirementKind
+            : `${requirementKind}[${alternativeIndex}]`;
+          const valid = validateStateMap(stateMap, entryLabel, kind, addError);
+          if (valid && schemaInfo) {
+            for (const [key, value] of Object.entries(stateMap)) {
+              validateStateValueAgainstSchema(
+                key,
+                value,
+                entryLabel,
+                kind,
+                schemaInfo,
+                usedLegacyKeys,
+                addError,
+              );
+            }
+          }
+        });
+      }
+    });
+  });
+}
+
 export async function validateStoryData(story, options = {}) {
   const rootPath = options.projectRootPath || projectRoot;
   const sourceLabel = options.sourceLabel || "story";
@@ -575,6 +689,8 @@ export async function validateStoryData(story, options = {}) {
 
     if (hasText(node.id) && !nodeChoices.has(node.id)) nodeChoices.set(node.id, validChoices);
   });
+
+  validateChronicle(story.chronicle, nodeById, schemaInfo, usedLegacyKeys, addError);
 
   for (const [nodeId, choices] of nodeChoices) {
     for (const { choice, choiceIndex } of choices) {

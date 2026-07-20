@@ -47,7 +47,7 @@ Completed so far:
 - [x] Add a gentle scene transition that respects reduced-motion settings
 - [x] Add tap-to-continue pacing for narration before choices appear
 - [x] Add a compact Settings screen: text size, reduced motion, restart confirmation
-- [ ] Add an accessible Chronicle that shows only facts the current protagonist knows
+- [x] Add an accessible Chronicle that shows only facts the current protagonist knows
 
 **Done when:** the opening is comfortable to read and control on a phone, visually atmospheric, accessible, and stable after refresh or resume.
 
@@ -192,6 +192,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Add an accessible Chronicle for known facts.**
+**Establish the Chapter One art bible with a representative situation panel.**
 
-Add a compact Chronicle that lists only facts Garren has learned on the current run: people, Red Hollow evidence, promises, and immediate dangers. Derive entries from existing story state without exposing trust scores, concealed motives, unavailable branches, or developer terminology. Preserve keyboard and screen-reader access, and keep story expansion paused until the demo-fidelity pass is complete.
+Define the permanent ink and charcoal treatment, grayscale range, camera distance, rain and fog behavior, severe checkpoint architecture, character-obscuring rules, and interface-safe composition. Prove those rules with one clean environment-first panel for an existing locked situation, without embedded text or generating the full Chapter One set. Story expansion remains paused during the demo-fidelity pass.

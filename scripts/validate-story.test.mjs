@@ -126,6 +126,20 @@ function applyChoiceEffects(values, effects = {}) {
   return nextValues;
 }
 
+function chronicleEntryIds(chapter, current) {
+  const visitedNodes = new Set([
+    current.nodeId,
+    ...(current.history || []).flatMap(({ from, to }) => [from, to]),
+  ]);
+  return chapter.chronicle.sections.flatMap((section) => section.entries
+    .filter((entry) => {
+      const visitMatches = !entry.available_from
+        || entry.available_from.some((nodeId) => visitedNodes.has(nodeId));
+      return visitMatches && choiceIsAvailable(entry, current.values || {});
+    })
+    .map(({ id }) => id));
+}
+
 test("accepts a state-gated route that reaches an ending", async () => {
   const story = {
     chapter: "Test Chapter",
@@ -336,6 +350,50 @@ test("rejects unknown state keys and values outside declared types or enums", as
   assert(codes.has("INVALID_TYPED_STATE_VALUE"));
 });
 
+test("validates Chronicle entry ids, visit gates, and state requirements", async () => {
+  const story = {
+    chapter: "Chronicle Test",
+    chronicle: {
+      empty_text: "Nothing known.",
+      sections: [{
+        id: "facts",
+        title: "Facts",
+        entries: [{
+          id: "known-key",
+          text: "The key opens the gate.",
+          available_from: ["ending"],
+          requires: { has_key: true },
+        }],
+      }],
+    },
+    nodes: [
+      node("start", [{ text: "Take the key.", next: "ending", effects: { has_key: true } }]),
+      node("ending", [], { ending: "THE END" }),
+    ],
+  };
+  const validResult = await validate(story, {
+    stateSchema: schema("Chronicle Test", {
+      has_key: { type: "boolean", description: "Whether the key is held." },
+    }),
+  });
+  assert.deepEqual(validResult.errors, []);
+
+  story.chronicle.sections[0].entries.push({
+    id: "known-key",
+    text: "Broken entry.",
+    available_from: ["missing-node"],
+    requires: { hidden_score: 3 },
+  });
+  const invalidCodes = errorCodes(await validate(story, {
+    stateSchema: schema("Chronicle Test", {
+      has_key: { type: "boolean", description: "Whether the key is held." },
+    }),
+  }));
+  assert(invalidCodes.has("DUPLICATE_CHRONICLE_ENTRY_ID"));
+  assert(invalidCodes.has("UNKNOWN_CHRONICLE_NODE"));
+  assert(invalidCodes.has("UNKNOWN_STATE_KEY"));
+});
+
 test("validates reconvergence declarations against known state keys", async () => {
   const stateSchema = schema("Invariant State", {
     trust: {
@@ -380,6 +438,55 @@ test("accepts legacy keys but reports them for migration", async () => {
   const result = await validate(story, { stateSchema });
   assert.deepEqual(result.errors, []);
   assert(result.warnings.some(({ code }) => code === "LEGACY_STATE_KEYS"));
+});
+
+test("Chapter One Chronicle reveals only route-known facts", async () => {
+  const { chapter } = await loadChapterOne();
+  const initialEntries = chronicleEntryIds(chapter, {
+    nodeId: "ch01_carrion_road",
+    values: {},
+  });
+  assert.deepEqual(initialEntries, ["garren", "orl", "orl-packet", "checkpoint"]);
+
+  const tavinEntries = chronicleEntryIds(chapter, {
+    nodeId: "ch01_first_gate",
+    history: [
+      { from: "ch01_carrion_road", to: "ch01_axle_hand" },
+      { from: "ch01_axle_hand", to: "ch01_first_gate" },
+    ],
+    values: { tavin_status: "hidden" },
+  });
+  assert(tavinEntries.includes("tavin"));
+  assert(tavinEntries.includes("tavin-hidden"));
+  assert(!tavinEntries.includes("tavin-captured"));
+  assert(tavinEntries.includes("meret"), "Meret unlocks when Garren enters her gate scene.");
+
+  const bindingEntries = chronicleEntryIds(chapter, {
+    nodeId: "ch01_merets_room_merchant",
+    history: [{ from: "ch01_false_floor", to: "ch01_merets_room_merchant" }],
+    values: { sella_promise: "binding" },
+  });
+  assert(bindingEntries.includes("sella-binding"));
+  assert(!bindingEntries.includes("sella-kept"));
+  assert(!bindingEntries.includes("sella-broken"));
+
+  const forbiddenKeys = new Set([
+    "tavin_trust",
+    "tavin_fear",
+    "meret_trust",
+    "meret_suspicion",
+    "sella_trust",
+    "civilian_pressure",
+  ]);
+  for (const entry of chapter.chronicle.sections.flatMap(({ entries }) => entries)) {
+    const requirementMaps = [entry.requires, ...(entry.requires_any || [])].filter(Boolean);
+    for (const stateMap of requirementMaps) {
+      for (const key of Object.keys(stateMap)) {
+        assert(!forbiddenKeys.has(key), `${entry.id} must not expose hidden score ${key}.`);
+      }
+    }
+    assert.doesNotMatch(entry.text, /\b(?:trust score|score|state flag|route id)\b/i);
+  }
 });
 
 test("Chapter One opening preserves every lockdown invariant across all branches", async () => {

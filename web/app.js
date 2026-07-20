@@ -51,6 +51,26 @@ function nodeText(node) {
     .join("");
 }
 
+function chronicleContent() {
+  const visitedNodes = new Set([
+    state.nodeId,
+    ...state.history.flatMap(({ from, to }) => [from, to]),
+  ]);
+  const sections = (chapter.chronicle?.sections || []).map((section) => {
+    const entries = section.entries.filter((entry) => {
+      const visitMatches = !entry.available_from
+        || entry.available_from.some((nodeId) => visitedNodes.has(nodeId));
+      return visitMatches && canChoose(entry);
+    });
+    if (entries.length === 0) return "";
+    return `<section class="chronicle-section" aria-labelledby="chronicle-${section.id}">
+      <h3 id="chronicle-${section.id}">${section.title}</h3>
+      <ul>${entries.map(({ text }) => `<li>${text}</li>`).join("")}</ul>
+    </section>`;
+  }).join("");
+  return sections || `<p class="chronicle-empty">${chapter.chronicle?.empty_text || "Nothing recorded yet."}</p>`;
+}
+
 function applyEffects(effects = {}) {
   for (const [key, value] of Object.entries(effects)) {
     state.values[key] = typeof value === "number" ? (Number(state.values[key]) || 0) + value : value;
@@ -78,6 +98,7 @@ function render() {
   if (!node) return renderError("The story could not find its next scene.");
 
   const ending = Boolean(node.ending);
+  const chronicle = chronicleContent();
   const textSizeOptions = [
     ["normal", "Normal"],
     ["large", "Large"],
@@ -96,6 +117,7 @@ function render() {
       <header class="topbar">
         <p class="eyebrow">The Ashen Oath &middot; Chapter One</p>
         <nav class="utility" aria-label="Game controls">
+          <button id="chronicle" type="button">Chronicle</button>
           <button id="settings" type="button">Settings</button>
           <button id="save" type="button">Save</button>
           <button id="restart" type="button">Restart</button>
@@ -131,6 +153,17 @@ function render() {
           <div class="dialog-actions"><button class="dialog-action" value="done">Done</button></div>
         </form>
       </dialog>
+      <dialog class="game-dialog chronicle-dialog" id="chronicle-dialog" aria-labelledby="chronicle-title" aria-describedby="chronicle-description">
+        <form method="dialog" class="dialog-panel">
+          <div class="dialog-heading">
+            <p class="dialog-kicker">Current knowledge</p>
+            <h2 id="chronicle-title">Chronicle</h2>
+            <p id="chronicle-description">Only what Garren has learned during this run is recorded here.</p>
+          </div>
+          <div class="chronicle-content">${chronicle}</div>
+          <div class="dialog-actions"><button class="dialog-action" value="done">Done</button></div>
+        </form>
+      </dialog>
       <dialog class="game-dialog" id="restart-dialog" aria-labelledby="restart-title" aria-describedby="restart-description">
         <form method="dialog" class="dialog-panel">
           <div class="dialog-heading">
@@ -147,7 +180,9 @@ function render() {
     </section>`;
 
   const settingsDialog = document.querySelector("#settings-dialog");
+  const chronicleDialog = document.querySelector("#chronicle-dialog");
   const restartDialog = document.querySelector("#restart-dialog");
+  document.querySelector("#chronicle")?.addEventListener("click", () => chronicleDialog?.showModal());
   document.querySelector("#settings")?.addEventListener("click", () => settingsDialog?.showModal());
   document.querySelector("#text-size")?.addEventListener("change", (event) => {
     if (!TEXT_SIZES.includes(event.target.value)) return;

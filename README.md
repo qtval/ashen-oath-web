@@ -27,6 +27,7 @@ The game is designed for a phone-sized portrait window, but also works on deskto
 - Gentle scene transitions that respect the player's reduced-motion preference
 - Narration-first pacing with an accessible Continue action before choices appear
 - Persistent text-size and reduced-motion settings with safe restart confirmation
+- A route-aware Chronicle containing only facts Garren has learned in the current run
 - A black-and-white, environment-first visual placeholder system
 
 ## Project structure

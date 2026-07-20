@@ -171,6 +171,15 @@ button { font: inherit; }
 }
 .dialog-action:hover, .dialog-action:focus-visible { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.08); outline: none; }
 .dialog-action.danger { border-color: rgba(212, 170, 150, .62); }
+.chronicle-dialog .dialog-panel { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+.chronicle-content { display: grid; gap: 1.15rem; }
+.chronicle-section { display: grid; gap: .65rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.chronicle-section:first-child { padding-top: 0; border-top: 0; }
+.chronicle-section h3 { margin: 0; color: rgba(255,255,255,.72); font: 700 .68rem/1.2 system-ui, sans-serif; letter-spacing: .13em; text-transform: uppercase; }
+.chronicle-section ul { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
+.chronicle-section li { position: relative; padding-left: 1rem; color: var(--muted); line-height: 1.45; }
+.chronicle-section li::before { position: absolute; left: 0; content: "\2014"; color: rgba(255,255,255,.46); }
+.chronicle-empty { margin: 0; color: var(--muted); line-height: 1.45; }
 
 @keyframes slow-push { from { transform: scale(1); } to { transform: scale(1.04); } }
 @keyframes scene-in { from { opacity: .36; } to { opacity: 1; } }
