@@ -49,7 +49,7 @@ button { font: inherit; }
 .topbar { position: relative; z-index: 2; display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; padding: max(1rem, env(safe-area-inset-top)) 1.1rem .6rem; }
 .eyebrow { margin: .18rem 0; color: rgba(255, 255, 255, .76); font: 600 .66rem/1.2 system-ui, sans-serif; letter-spacing: .15em; text-shadow: 0 2px 8px #000; text-transform: uppercase; }
 .utility { display: flex; gap: .2rem; }
-.utility button, .restart {
+.utility button, .restart, .continue {
   min-height: 38px;
   padding: .4rem .45rem;
   border: 0;
@@ -60,7 +60,7 @@ button { font: inherit; }
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.utility button:hover, .utility button:focus-visible, .restart:hover, .restart:focus-visible { color: #fff; outline: 1px solid var(--line); outline-offset: 2px; }
+.utility button:hover, .utility button:focus-visible, .restart:hover, .restart:focus-visible, .continue:hover, .continue:focus-visible { color: #fff; outline: 1px solid var(--line); outline-offset: 2px; }
 
 .story-content {
   position: relative;
@@ -75,7 +75,15 @@ button { font: inherit; }
 .text + .text { margin-top: .62rem; }
 .text.remembered { font-size: clamp(.98rem, 3.7vw, 1.12rem); line-height: 1.4; }
 
-.choices { display: grid; border-top: 1px solid var(--line); }
+.continue-prompt { display: flex; justify-content: flex-end; border-top: 1px solid var(--line); }
+.continue {
+  min-height: 53px;
+  padding-right: .55rem;
+  color: var(--ink);
+}
+.continue span { padding-left: .65rem; color: rgba(255,255,255,.68); }
+.continue[hidden], .choices[hidden] { display: none; }
+.choices { display: grid; border-top: 1px solid var(--line); animation: choices-in .26s ease-out both; }
 .choice {
   min-height: 53px;
   padding: .82rem .55rem;
@@ -108,6 +116,7 @@ button { font: inherit; }
   from { opacity: 0; transform: translateY(.7rem); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes choices-in { from { opacity: 0; } to { opacity: 1; } }
 
 @media (min-width: 640px) {
   .story-content { padding-right: 2rem; padding-left: 2rem; }
@@ -118,7 +127,8 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .story,
   .story::before,
-  .story-content { animation: none; }
+  .story-content,
+  .choices { animation: none; }
   .choice { transition: none; }
 }
 

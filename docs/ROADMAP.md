@@ -45,7 +45,7 @@ Completed so far:
 - [x] First atmospheric checkpoint panel integrated as a visual reference
 - [ ] Confirm the full-screen layout on a real phone and a narrow desktop window
 - [x] Add a gentle scene transition that respects reduced-motion settings
-- [ ] Add tap-to-continue pacing for narration before choices appear
+- [x] Add tap-to-continue pacing for narration before choices appear
 - [ ] Add a compact Settings screen: text size, reduced motion, restart confirmation
 - [ ] Add an accessible Chronicle that shows only facts the current protagonist knows
 
@@ -192,6 +192,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Add tap-to-continue narration pacing before choices appear.**
+**Add a compact Settings screen.**
 
-Separate reading from deciding: narration should appear first, then a clear tap or keyboard action should reveal the available choices. Preserve accessibility, saves, ending behavior, and reduced-motion preferences. Story expansion and the clerk-route payoff remain paused until the demo-fidelity pass is complete.
+Add controls for text size and reduced motion, plus confirmation before restarting an active run. Persist preferences separately from story progress, keep the panel-led presentation uncluttered, and preserve keyboard and screen-reader access. Story expansion remains paused until the demo-fidelity pass is complete.

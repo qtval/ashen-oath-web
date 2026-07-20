@@ -25,6 +25,7 @@ The game is designed for a phone-sized portrait window, but also works on deskto
 - Choices with hidden flags, traits, relationships, and delayed consequences
 - Automatic local progress saving, plus manual save and restart controls
 - Gentle scene transitions that respect the player's reduced-motion preference
+- Narration-first pacing with an accessible Continue action before choices appear
 - A black-and-white, environment-first visual placeholder system
 
 ## Project structure

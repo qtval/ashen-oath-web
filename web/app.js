@@ -76,7 +76,8 @@ function render() {
         </article>
         ${ending
           ? `<p class="ending-close">The road continues, but this chapter ends here.</p><button class="restart" id="ending-restart" type="button">Begin again</button></section>`
-          : `<div class="choices" role="group" aria-label="Choices">${choices}</div>`}
+          : `<div class="continue-prompt"><button class="continue" id="continue" type="button" aria-controls="choices" aria-expanded="false">Continue <span aria-hidden="true">\u2192</span></button></div>
+            <div class="choices" id="choices" role="group" aria-label="Choices" hidden>${choices}</div>`}
       </div>
       <footer class="footer"><span>${chapter.chapter}</span><span>Decision ${state.history.length + 1}</span></footer>
     </section>`;
@@ -86,6 +87,22 @@ function render() {
     announce("Progress saved.");
   });
   document.querySelectorAll("#restart, #ending-restart").forEach((button) => button.addEventListener("click", restart));
+  const story = document.querySelector("#story");
+  const continueButton = document.querySelector("#continue");
+  const choicesElement = document.querySelector("#choices");
+  const revealChoices = () => {
+    if (!continueButton || !choicesElement || !choicesElement.hidden) return;
+    choicesElement.hidden = false;
+    continueButton.hidden = true;
+    continueButton.setAttribute("aria-expanded", "true");
+    choicesElement.querySelector(".choice:not(:disabled)")?.focus();
+  };
+  continueButton?.addEventListener("click", revealChoices);
+  story?.addEventListener("keydown", (event) => {
+    if (event.target !== story || !["Enter", " "].includes(event.key)) return;
+    event.preventDefault();
+    revealChoices();
+  });
   document.querySelectorAll("[data-choice]").forEach((button) => button.addEventListener("click", () => choose(Number(button.dataset.choice))));
 }
 
