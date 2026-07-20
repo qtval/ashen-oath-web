@@ -8,6 +8,8 @@
 
 **Rule:** Structure, consequence, and evidence logic come before dialogue expansion.
 
+**First-time clarity rule:** Mystery may conceal loyalty, private motives, and delayed consequences. It may not conceal the current location, immediate character needs, evidence custody, political cause-and-effect, or the known stakes of a player choice. Introduce world context through concrete needs and actions, and avoid stacking unexplained names or evidence terms.
+
 This beat sheet replaces the prototype's route logic as the design source of truth. It does not replace `data/chapters/chapter_01.json` yet. Implementation should translate these beats into story data without treating the prototype dialogue as fixed.
 
 ## Chapter promise

@@ -50,6 +50,22 @@ The central question is:
 
 Garren is not a chosen one, hidden monarch, or invincible warrior. He becomes important because of what he knows, whom he trusts, what evidence survives, and what he is willing to become.
 
+## First-time story clarity
+
+The story may preserve mystery, distrust, and hidden consequences, but it must not rely on player confusion. A first-time player should understand, without outside lore:
+
+- where the current situation is happening and what physically changed;
+- who is present, what each person immediately wants, and why the decision cannot simply wait;
+- the known risk or compromise in every choice, even when its delayed consequence remains hidden;
+- how newly introduced names, factions, documents, and places connect to the current human problem; and
+- the causal trail from Red Hollow's evidence to the threatened war and the danger faced by checkpoint civilians.
+
+Introduce necessary context through concrete action, material conditions, character need, or concise narration. Avoid stacking unexplained proper nouns, evidence terms, or political facts in one passage. When location or time context is needed, present it in the reader outside the artwork; never embed explanatory text in a panel image.
+
+Intentional uncertainty concerns whom to trust, what a person conceals, and which cost will return later. Basic geography, immediate motivation, evidence custody, and cause-and-effect must remain understandable.
+
+Before story lock, outside players unfamiliar with the project must be able to explain Garren's immediate goal and former work, the competing needs of Meret, Tavin, and Sella, the essential Red Hollow evidence trail, why disclosure could renew the war, and what they knowingly risked in their major choices.
+
 ## Current story-design target
 
 Before expanding or polishing more dialogue, create a Chapter One beat sheet of approximately 15-20 purposeful scenes forming a coherent 20-30 minute chapter.

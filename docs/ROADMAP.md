@@ -18,6 +18,7 @@
 5. **Mobile is the primary screen.** Portrait layout, one-thumb controls, legible type, fast resume, and calm interruption handling are requirements, not polish.
 6. **Original work only.** We may learn from great grim fantasy and narrative games, but we do not copy their characters, plots, dialogue, factions, or visual identities.
 7. **Web game first, Android last.** We design and test for phone screens throughout development, but we do not package or ship the Android app until the complete browser game has passed full-game testing and content lock.
+8. **Mystery without confusion.** A first-time player must understand the current location, immediate motives, evidence in play, and known stakes of each choice. We conceal delayed consequences and private motives, not basic cause-and-effect.
 
 ## Current status
 
@@ -71,8 +72,10 @@ Completed so far:
 - [x] Confront Garren with the human cost of his former interrogation work and pay the choice off after reconvergence
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
+- [ ] Complete a first-time comprehension pass for geography, character motives, evidence custody, political cause-and-effect, and choice stakes
+- [ ] Test Chapter One with players who have not read the project documents and repair every repeated point of confusion
 
-**Done when:** a first-time player can finish in 20-30 minutes, understands the immediate conflict, and wants to replay to see consequences they missed.
+**Done when:** a first-time player can finish in 20-30 minutes; explain Garren's goal, the principal characters' competing needs, the Red Hollow evidence trail, and why disclosure threatens civilians; understand the known cost of their choices; and want to replay to discover consequences they missed.
 
 ## Milestone 0.4 - Art and sound vertical slice
 
