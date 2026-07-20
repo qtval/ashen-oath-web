@@ -70,6 +70,7 @@ Completed so far:
 - [x] Repair Tavin's physical continuity and ending access across testimony, crisis, and chapel branches
 - [x] Dramatize the renewed-war pressure and why the checkpoint refugees would pay first
 - [x] Confront Garren with the human cost of his former interrogation work and pay the choice off after reconvergence
+- [x] Clarify the shared opening through the first investigation choice for players without project context
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 - [ ] Complete a first-time comprehension pass for geography, character motives, evidence custody, political cause-and-effect, and choice stakes

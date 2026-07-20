@@ -422,6 +422,62 @@ test("Chapter One opening preserves every lockdown invariant across all branches
   );
 });
 
+test("Chapter One shared opening explains its people, evidence, and immediate stakes", async () => {
+  const { chapter } = await loadChapterOne();
+  const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
+  const opening = nodes.get("ch01_carrion_road");
+  const tavin = nodes.get("ch01_axle_hand");
+  const lockdown = nodes.get("ch01_bell_and_bar");
+  const searchTable = nodes.get("ch01_search_table");
+
+  assert.match(opening.text, /wants to cross without attention/);
+  assert.match(opening.text, /Captain Orl, an officer from his regiment/);
+  assert.match(opening.text, /Crown deliberately sacrificed their men at Red Hollow/);
+  assert.match(tavin.text, /kept the signal fires at Red Hollow/);
+  assert.match(tavin.text, /Crown calls me a deserter because I ran/);
+  assert.deepEqual(
+    new Set(tavin.choices.map(({ text }) => text)),
+    new Set([
+      "Call Captain Meret's soldiers and surrender Tavin.",
+      "Hide Tavin beneath the wagon's false floor.",
+      "Refuse him and leave him in the refugee crowd.",
+      "Demand his full account before hiding him.",
+    ]),
+  );
+
+  for (const firstGateId of [
+    "ch01_first_gate_captured",
+    "ch01_first_gate",
+    "ch01_first_gate_abandoned",
+    "ch01_first_gate_bargaining",
+  ]) {
+    const firstGate = nodes.get(firstGateId);
+    assert.match(firstGate.text, /regiment's former interrogator/);
+    assert(firstGate.choices.some(({ text }) => text.includes("discharge papers")));
+    assert(firstGate.choices.some(({ text }) => text.includes("Lie that Orl's packet")));
+    assert(firstGate.choices.some(({ text }) => text.includes("flawed seal")));
+  }
+
+  for (const wheelId of [
+    "ch01_wheel_in_mud_captured",
+    "ch01_wheel_in_mud",
+    "ch01_wheel_in_mud_abandoned",
+    "ch01_wheel_in_mud_bargaining",
+  ]) {
+    const wheel = nodes.get(wheelId);
+    assert.match(wheel.text, /Three (?:refugees|others)/);
+    assert(wheel.choices.some(({ text }) => text.includes("hidden passengers through the gate")));
+    assert(wheel.choices.some(({ text }) => text.includes("unless Sella cooperates")));
+    assert(wheel.choices.some(({ text }) => text.includes("evidence packet as collateral")));
+  }
+
+  assert.match(lockdown.text, /names three targets/);
+  assert.match(lockdown.text, /Tavin, Orl's packet, and the regiment's old supply ledgers/);
+  assert.match(searchTable.text, /pressure-copy—the faint duplicate/);
+  assert.match(searchTable.text, /refusing Garren's regiment permission to retreat/);
+  assert.match(searchTable.text, /choose whom or what to investigate first/);
+});
+
 test("Chapter One makes the renewed-war pressure concrete before investigation", async () => {
   const { chapter } = await loadChapterOne();
   const lockdown = chapter.nodes.find(({ id }) => id === "ch01_bell_and_bar");
@@ -431,8 +487,8 @@ test("Chapter One makes the renewed-war pressure concrete before investigation",
   assert(pressureBeat, "The world-pressure scene must exist.");
   assert(lockdown.choices.every(({ next }) => next === pressureBeat.id));
   assert.match(pressureBeat.text, /Chancellor/);
-  assert.match(pressureBeat.text, /Bracken families/);
-  assert.match(pressureBeat.text, /levies are a day west/);
+  assert.match(pressureBeat.text, /refugee families from Bracken lands/);
+  assert.match(pressureBeat.text, /march their soldiers within a day/);
   assert.match(pressureBeat.text, /hostages/);
   assert.match(pressureBeat.panel_description, /reprisal roll/);
   assert.deepEqual(
@@ -453,7 +509,7 @@ test("Chapter One confronts Garren with the cost of his interrogation work", asy
   assert.match(reckoning.text, /two nights/);
   assert.match(reckoning.text, /brother/);
   assert.match(reckoning.text, /daughter/);
-  assert.match(reckoning.text, /Bracken roll/);
+  assert.match(reckoning.text, /Bracken hostage list/);
   assert.match(reckoning.text, /open a door/);
   assert.deepEqual(
     new Set(reckoning.choices.map(({ effects }) => effects.interrogation_response)),
