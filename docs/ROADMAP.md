@@ -71,6 +71,7 @@ Completed so far:
 - [x] Dramatize the renewed-war pressure and why the checkpoint refugees would pay first
 - [x] Confront Garren with the human cost of his former interrogation work and pay the choice off after reconvergence
 - [x] Clarify the shared opening through the first investigation choice for players without project context
+- [x] Separate Sella's binding bargain from passage actually kept and correct every ending consequence
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 - [ ] Complete a first-time comprehension pass for geography, character motives, evidence custody, political cause-and-effect, and choice stakes
@@ -189,6 +190,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Repair Sella's promise timing.**
+**Pay off the clerk approach during the records investigation.**
 
-Accepting Sella's terms during the merchant or witness investigation must record a renewed or binding promise, not a kept one. Mark it kept only when her wagon passes or an ending explicitly fulfills the bargain. Update every affected conditional consequence and test the timing across all routes without adding dialogue, scenes, or final art.
+The early choice to watch the clerk must reveal a concrete seizure entry, courier route, or document-access advantage rather than reconverging as an inert flag. Carry that knowledge into one later warrant or evidence decision, and apply the first-time clarity standard without expanding unrelated routes or producing final art.

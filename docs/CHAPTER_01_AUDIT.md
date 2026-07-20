@@ -100,6 +100,8 @@ Accepting Sella's terms during the merchant or witness investigation marks the p
 
 **Required correction:** distinguish `renewed` or `binding` from `kept`. Mark the promise kept only when the wagon passes or the selected ending explicitly fulfills it.
 
+**Resolved:** Accepting Sella's terms now records a `binding` bargain. No route reaches the crisis with `sella_promise` already marked `kept`; forcing her wagon through is the only pre-ending action that keeps it. Other endings remember the unpaid obligation, while Sella's network ending explicitly fulfills it after every hidden passenger reaches the causeway.
+
 #### 6. The clerk approach has no delayed informational payoff
 
 Watching the clerk exchange orders unlocks “Follow the clerk's paper trail,” but that choice immediately reconverges at the same search table without revealing a clerk, document path, or later access advantage. The ditch approach, by contrast, unlocks Tavin's crisis escape.
@@ -142,7 +144,7 @@ Strong character triangle: Tavin's confession, Sella's betrayal, and the courier
 
 ### Merchant
 
-Sella's motive and the present cover-up are clear. Promise timing must be separated from actual fulfillment, and the route needs a consequence if Garren uses her tip against her.
+Sella's motive and the present cover-up are clear. The renewed promise now remains binding until actual passage; the route still needs a consequence if Garren uses her tip against her.
 
 ### Authority
 
@@ -163,6 +165,6 @@ Milestone 0.3 is **not yet accepted** despite the complete beat-sheet implementa
 
 ## Exact next task
 
-**Repair Sella's promise timing.**
+**Pay off the clerk approach during the records investigation.**
 
-Accepting Sella's terms during the merchant or witness investigation must record a renewed or binding promise, not a kept one. Mark it kept only when her wagon passes or an ending explicitly fulfills the bargain. Update every affected conditional consequence and test the timing across all routes without adding dialogue, scenes, or final art.
+The early choice to watch the clerk must reveal a concrete seizure entry, courier route, or document-access advantage rather than reconverging as an inert flag. Carry that knowledge into one later warrant or evidence decision, and apply the first-time clarity standard without expanding unrelated routes or producing final art.

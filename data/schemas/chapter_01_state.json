@@ -52,8 +52,8 @@
     },
     "sella_promise": {
       "type": "enum",
-      "values": ["none", "wagon_passage", "packet_collateral", "kept", "broken"],
-      "description": "The concrete obligation binding Garren and Sella, including whether it survived the crisis."
+      "values": ["none", "wagon_passage", "packet_collateral", "binding", "kept", "broken"],
+      "description": "The concrete obligation binding Garren and Sella, distinguishing a renewed bargain from passage actually fulfilled or broken."
     },
     "sella_trust": {
       "type": "number",

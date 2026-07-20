@@ -112,7 +112,7 @@ The machine-readable vocabulary, allowed values, legacy migration keys, and reco
 | `tavin_fear` | Scenes 3 and 9 | Causes a protective lie or public accusation against Garren at the final crisis. |
 | `meret_trust` and `meret_suspicion` | Scenes 4, 7, 11 | Changes access to the warrant, Meret's response at her breaking point, and the cost of Ending 1. |
 | `meret_guilt_named` | Scenes 4 or 11 | Can move Meret from obedience to falsification, but makes blackmail impossible to disguise as trust. |
-| `sella_promise` and `sella_trust` | Scenes 5, 10, 13 | Determines whether Sella sacrifices Tavin, burns her license, or accepts the evidence in Ending 3. |
+| `sella_promise` (`wagon_passage`, `packet_collateral`, `binding`, `kept`, or `broken`) and `sella_trust` | Scenes 5, 10, 13 | Separates an offered or renewed bargain from passage actually fulfilled, and determines whether Sella sacrifices Tavin, burns her license, or accepts the evidence in Ending 3. |
 | `sella_tip_known` | Scene 10 | Lets Garren forgive, leverage, or expose Sella; changes Tavin's reaction at reconvergence. |
 | Evidence custody states | Scenes 7-12 | Determine ending availability, the credibility of the surviving case, and who can be traced. |
 | `public_method` (`restraint`, `deception`, or `coercion`) | Scenes 4, 6, 6B, 9 | Changes how the crowd and principal cast interpret Garren during Scene 13. |
@@ -297,9 +297,9 @@ flowchart TD
 - **Dramatic purpose:** Reveal Sella's evidence and betrayal together, preventing the merchant route from becoming a clean escape option.
 - **Characters and wants:** Sella wants a binding arrangement before revealing her leverage. Garren wants the courier strap. Tavin, if present, wants to know who exposed the route. Sella's dependents want not to be discovered beneath merchant papers.
 - **Revealed or concealed:** The strap matches the folio serial and Tavin's courier. Sella admits she tipped the checkpoint about a valuable deserter to buy safe passage, then hid him when she learned the order meant execution.
-- **Choice or pressure:** Keep the promise and accept her terms, leverage the tip to take the strap, or expose her to Tavin and Meret.
-- **Immediate consequence:** Sets `sella_tip_known`, changes `sella_trust`, and determines custody of the strap. Tavin's trust can fall even if Garren forgives her.
-- **Delayed consequence:** A respected bargain opens Sella's network ending. Leverage makes her carry evidence only under debt. Exposure can save Garren's credibility with Tavin while guaranteeing Sella sacrifices him at the crisis.
+- **Choice or pressure:** Renew the promise and accept her terms, leverage the tip to take the strap, or expose her to Tavin and Meret.
+- **Immediate consequence:** Sets `sella_tip_known`, changes `sella_trust`, and determines custody of the strap. Accepting terms records a `binding` bargain, not a kept one; Tavin's trust can fall even if Garren forgives her.
+- **Delayed consequence:** A binding bargain opens Sella's network ending but remains unpaid unless her wagon actually passes. Forcing it through at the crisis marks the promise `kept`; choosing Sella's ending fulfills it only when her passengers reach the causeway. Leverage makes her carry evidence under debt. Exposure can save Garren's credibility with Tavin while guaranteeing Sella sacrifices him at the crisis.
 - **Destination:** Witness route -> Scene 12. Merchant route -> Scene 11.
 - **Environmental panel:** Tilted wagon interior built from crates, flour dust, wet blankets, and a lifted false floor; stamped leather lies small against worn timber, no close faces.
 - **Garren revealed:** He sees his own self-deception in Sella's claim that pricing a betrayal makes it less personal.
@@ -332,7 +332,7 @@ flowchart TD
 
 - **Dramatic purpose:** Trigger every principal character's breaking point and convert investigation into irreversible public action.
 - **Characters and wants:** Meret receives orders to execute Tavin, burn the ledger, seize Sella's wagon, and clear the refugees. Tavin wants to shout the accusation before he disappears. Sella wants her dependents out. Garren wants to prevent the order from choosing every cost for him.
-- **Revealed or concealed:** The cover-up is willing to create visible casualties. Meret's quiet delay is over. Tavin's fear can produce a lie about Garren. Sella's kept or broken promise determines whether she cuts Tavin loose or gives him up.
+- **Revealed or concealed:** The cover-up is willing to create visible casualties. Meret's quiet delay is over. Tavin's fear can produce a lie about Garren. Sella's binding, kept, or broken promise determines what she still expects from Garren and what she will risk at the gate.
 - **Choice or pressure:** Hold Meret's line long enough to falsify the record, open the culvert for Tavin, force Sella's wagon through, or publicly destroy the warrant and make the crowd witness its contents.
 - **Immediate consequence:** Determines `civilian_cost`, Tavin's freedom, the wagon's fate, Meret's command, and which custodians remain available. Earlier approach knowledge, promises, and public method alter success and harm.
 - **Delayed consequence:** No branch escapes damage: refugees are detained or injured, a soldier refuses Meret, Sella loses her license, Tavin becomes hunted, or the Crown learns exactly who challenged the warrant.

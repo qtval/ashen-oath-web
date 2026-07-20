@@ -661,6 +661,61 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
   }
 });
 
+test("Chapter One keeps Sella's renewed bargain binding until passage is fulfilled", async () => {
+  const { chapter, stateSchema } = await loadChapterOne();
+  const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
+  const promiseValues = stateSchema.states.sella_promise.values;
+
+  assert(promiseValues.includes("binding"));
+  for (const nodeId of ["ch01_false_floor", "ch01_false_floor_witness"]) {
+    const renewalChoice = nodes.get(nodeId).choices.find(
+      ({ text }) => text === "Accept her terms and renew the bargain.",
+    );
+    assert(renewalChoice, `${nodeId} must offer the renewed bargain.`);
+    assert.equal(renewalChoice.effects.sella_promise, "binding");
+  }
+
+  const preCrisisPromises = new Set(
+    statesArrivingAt(chapter, "ch01_clear_the_road", { deduplicate: true })
+      .map(({ sella_promise }) => sella_promise),
+  );
+  assert(preCrisisPromises.has("binding"));
+  assert(!preCrisisPromises.has("kept"), "No route may keep Sella's promise before passage occurs.");
+
+  const choicesThatKeepPromise = chapter.nodes.flatMap((storyNode) => storyNode.choices
+    .filter(({ effects }) => effects?.sella_promise === "kept")
+    .map(({ text }) => [storyNode.id, text]));
+  assert.deepEqual(choicesThatKeepPromise, [[
+    "ch01_clear_the_road",
+    "Force Sella's wagon through the opening.",
+  ]]);
+
+  const merchantEndingChoice = nodes.get("ch01_open_gate_oath").choices.find(
+    ({ next }) => next === "ch01_ending_merchants_price",
+  );
+  assert(choiceIsAvailable(merchantEndingChoice, { sella_promise: "binding" }));
+
+  for (const endingId of [
+    "ch01_ending_quiet_record",
+    "ch01_ending_debt_in_rain",
+    "ch01_ending_fire_keeps",
+  ]) {
+    const bindingFragments = nodes.get(endingId).conditional_text.filter(
+      (fragment) => fragment.group === "sella_terms"
+        && choiceIsAvailable(fragment, { sella_promise: "binding" }),
+    );
+    assert.equal(bindingFragments.length, 1, `${endingId} must remember one binding bargain.`);
+    assert.match(bindingFragments[0].text, /unpaid/);
+  }
+
+  const merchantBindingFragments = nodes.get("ch01_ending_merchants_price").conditional_text.filter(
+    (fragment) => fragment.group === "sella_terms"
+      && choiceIsAvailable(fragment, { sella_promise: "binding" }),
+  );
+  assert.equal(merchantBindingFragments.length, 1);
+  assert.match(merchantBindingFragments[0].text, /call the bargain paid/);
+});
+
 test("Chapter One final oath gates custodians without removing the fire ending", async () => {
   const { chapter, stateSchema } = await loadChapterOne();
   const endingInvariant = stateSchema.reconvergence_invariants.find(
