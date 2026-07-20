@@ -25,6 +25,7 @@ button { font: inherit; }
   min-height: 100dvh;
   overflow: hidden;
   background: #171716;
+  animation: scene-in .42s ease-out both;
 }
 
 .story::before {
@@ -61,7 +62,13 @@ button { font: inherit; }
 }
 .utility button:hover, .utility button:focus-visible, .restart:hover, .restart:focus-visible { color: #fff; outline: 1px solid var(--line); outline-offset: 2px; }
 
-.story-content { position: relative; z-index: 2; margin-top: auto; padding: 0 1.15rem max(1rem, env(safe-area-inset-bottom)); }
+.story-content {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding: 0 1.15rem max(1rem, env(safe-area-inset-bottom));
+  animation: scene-content-in .5s cubic-bezier(.22, .72, .34, 1) both;
+}
 .dialogue { max-width: 42rem; margin: 0 0 1.15rem; text-shadow: 0 2px 12px #000, 0 0 2px #000; }
 .speaker { margin: 0 0 .5rem; color: rgba(255,255,255,.78); font: 700 .68rem/1.2 system-ui, sans-serif; letter-spacing: .15em; text-transform: uppercase; }
 .text { margin: 0; font-size: clamp(1.08rem, 4.4vw, 1.45rem); line-height: 1.42; }
@@ -96,6 +103,11 @@ button { font: inherit; }
 .status-screen { min-height: 100dvh; display: grid; place-items: center; color: var(--muted); }
 
 @keyframes slow-push { from { transform: scale(1); } to { transform: scale(1.04); } }
+@keyframes scene-in { from { opacity: .36; } to { opacity: 1; } }
+@keyframes scene-content-in {
+  from { opacity: 0; transform: translateY(.7rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 @media (min-width: 640px) {
   .story-content { padding-right: 2rem; padding-left: 2rem; }
@@ -103,5 +115,10 @@ button { font: inherit; }
   .footer { padding-right: 2rem; padding-left: 2rem; }
 }
 
-@media (prefers-reduced-motion: reduce) { .story::before { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .story,
+  .story::before,
+  .story-content { animation: none; }
+  .choice { transition: none; }
+}
 

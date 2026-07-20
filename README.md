@@ -24,6 +24,7 @@ The game is designed for a phone-sized portrait window, but also works on deskto
 - Forty-two narrative nodes and four endings
 - Choices with hidden flags, traits, relationships, and delayed consequences
 - Automatic local progress saving, plus manual save and restart controls
+- Gentle scene transitions that respect the player's reduced-motion preference
 - A black-and-white, environment-first visual placeholder system
 
 ## Project structure

@@ -26,6 +26,8 @@
 **Playable preview:** https://qtval.github.io/ashen-oath-web/  
 **Current chapter:** The Carrion Road - the checkpoint opening
 
+**Current focus:** Demo-fidelity pass. Story expansion is paused while the remaining browser-reader features are completed and a representative art-and-sound slice is established. Final panels for every Chapter One situation remain gated on scene and branch lock so temporary scenes are not mistaken for production targets.
+
 Completed so far:
 
 - Browser-first repository and live GitHub Pages preview
@@ -42,7 +44,7 @@ Completed so far:
 - [x] Touch-friendly choice targets and local save/restart
 - [x] First atmospheric checkpoint panel integrated as a visual reference
 - [ ] Confirm the full-screen layout on a real phone and a narrow desktop window
-- [ ] Add a gentle scene transition that respects reduced-motion settings
+- [x] Add a gentle scene transition that respects reduced-motion settings
 - [ ] Add tap-to-continue pacing for narration before choices appear
 - [ ] Add a compact Settings screen: text size, reduced motion, restart confirmation
 - [ ] Add an accessible Chronicle that shows only facts the current protagonist knows
@@ -190,6 +192,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Pay off the clerk approach during the records investigation.**
+**Add tap-to-continue narration pacing before choices appear.**
 
-The early choice to watch the clerk must reveal a concrete seizure entry, courier route, or document-access advantage rather than reconverging as an inert flag. Carry that knowledge into one later warrant or evidence decision, and apply the first-time clarity standard without expanding unrelated routes or producing final art.
+Separate reading from deciding: narration should appear first, then a clear tap or keyboard action should reveal the available choices. Preserve accessibility, saves, ending behavior, and reduced-motion preferences. Story expansion and the clerk-route payoff remain paused until the demo-fidelity pass is complete.
