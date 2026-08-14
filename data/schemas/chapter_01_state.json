@@ -7,6 +7,10 @@
       "values": ["none", "ditch", "clerk"],
       "description": "The single checkpoint advantage Garren chooses during the opening approach."
     },
+    "clerk_order_copy": {
+      "type": "boolean",
+      "description": "Whether Garren stole the clerk's discarded carbon copy, giving him earned access to the warrant's destruction clause."
+    },
     "investigation_route": {
       "type": "enum",
       "values": ["records", "witness", "merchant", "authority"],
@@ -246,6 +250,7 @@
       "scene": "ch01_bell_and_bar",
       "preserve": [
         "approach_intel",
+        "clerk_order_copy",
         "tavin_status",
         "tavin_can_leave",
         "tavin_trust",

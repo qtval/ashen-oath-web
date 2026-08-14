@@ -562,7 +562,7 @@ test("Chapter One shared opening explains its people, evidence, and immediate st
     assert.match(firstGate.text, /regiment's former interrogator/);
     assert(firstGate.choices.some(({ text }) => text.includes("discharge papers")));
     assert(firstGate.choices.some(({ text }) => text.includes("Lie that Orl's packet")));
-    assert(firstGate.choices.some(({ text }) => text.includes("flawed seal")));
+    assert(firstGate.choices.some(({ text }) => text.includes("warrant named Orl's unopened packet")));
   }
 
   for (const wheelId of [
@@ -603,6 +603,25 @@ test("Chapter One makes the renewed-war pressure concrete before investigation",
     new Set([false, true]),
   );
   assert(pressureBeat.choices.every(({ next }) => next === "ch01_old_questions"));
+});
+
+test("Chapter One pays off the clerk approach and gates public warrant destruction", async () => {
+  const { chapter } = await loadChapterOne();
+  const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
+  const overlook = nodes.get("ch01_muddy_overlook");
+  const clerkChoice = overlook.choices.find(({ text }) => text.includes("carbon copy"));
+  assert.equal(clerkChoice.effects.clerk_order_copy, true);
+
+  const lockdown = nodes.get("ch01_bell_and_bar");
+  assert(lockdown.conditional_text.some(
+    ({ requires, text }) => requires?.clerk_order_copy === true && text.includes("burn every proof"),
+  ));
+
+  const crisis = nodes.get("ch01_clear_the_road");
+  const publicDestruction = crisis.choices.find(({ next }) => next === "ch01_clear_the_road_warrant");
+  assert(choiceIsAvailable(publicDestruction, { clerk_order_copy: true, search_warrant_status: "unseen" }));
+  assert(!choiceIsAvailable(publicDestruction, { clerk_order_copy: false, search_warrant_status: "unseen" }));
+  assert(choiceIsAvailable(publicDestruction, { clerk_order_copy: false, search_warrant_status: "copied" }));
 });
 
 test("Chapter One confronts Garren with the cost of his interrogation work", async () => {
@@ -794,7 +813,7 @@ test("Chapter One keeps Sella's renewed bargain binding until passage is fulfill
     .map(({ text }) => [storyNode.id, text]));
   assert.deepEqual(choicesThatKeepPromise, [[
     "ch01_clear_the_road",
-    "Force Sella's wagon through the opening.",
+    "Call in Sella's bargain and drive her wagon through the crowd.",
   ]]);
 
   const merchantEndingChoice = nodes.get("ch01_open_gate_oath").choices.find(

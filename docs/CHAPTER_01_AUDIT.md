@@ -5,6 +5,21 @@
 **Chapter:** The Carrion Road
 **Decision:** Chapter One is structurally playable but is not yet pacing-locked, continuity-locked, or ready for final panel production.
 
+## Story-quality gate update — 2026-08-14
+
+The first editorial correction pass repaired several issues found after the original route audit:
+
+- Garren no longer identifies Meret's flawed seal before opening Orl's packet.
+- Tavin presents a scorched Red Hollow signal token before asking Garren for protection.
+- The clerk approach now earns a stolen carbon copy of the concealed destruction clause and can unlock public exposure during the crisis.
+- Moving Orl's packet into Sella's or Meret's custody is now stated directly in the player's investigation choice.
+- Sella's wagon breakthrough requires a surviving bargain; it is no longer available after Garren refuses or breaks her terms.
+- Public destruction of the warrant requires actual access to the warrant or the stolen carbon copy.
+- Final route choices now describe joining the custodian's road rather than implying Garren personally holds every part of the case.
+- Choices unavailable to Garren are hidden instead of exposing unexplained locked alternatives.
+
+The graph and regression suite pass after these corrections. This does not close the audit: outside comprehension, choice-reasoning, and timing tests are still required, and final panels remain blocked on story lock.
+
 ## Method
 
 The audit combined:

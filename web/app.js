@@ -106,10 +106,10 @@ function render() {
   ].map(([value, label]) => `<option value="${value}" ${preferences.textSize === value ? "selected" : ""}>${label}</option>`).join("");
   // CSS resolves image URLs relative to web/styles.css, hence the parent path.
   const artPath = node.panel_image || "../assets/panels/checkpoint-rain-v1.png";
-  const choices = (node.choices || []).map((choice, index) => {
-    const available = canChoose(choice);
-    return `<button class="choice" data-choice="${index}" type="button" ${available ? "" : "disabled"}>${choice.text}${available ? "" : " <em>(not available)</em>"}</button>`;
-  }).join("");
+  const choices = (node.choices || []).map((choice, index) => ({ choice, index }))
+    .filter(({ choice }) => canChoose(choice))
+    .map(({ choice, index }) => `<button class="choice" data-choice="${index}" type="button">${choice.text}</button>`)
+    .join("");
 
   app.innerHTML = `
     <section id="story" class="story" tabindex="-1" style="--scene-image: url('${artPath}')">
