@@ -26,7 +26,7 @@
 **Playable preview:** https://qtval.github.io/ashen-oath-web/  
 **Current chapter:** The Carrion Road - the checkpoint opening
 
-**Current focus:** Demo-fidelity pass. Story expansion is paused while the remaining browser-reader features are completed and a representative art-and-sound slice is established. Final panels for every Chapter One situation remain gated on scene and branch lock so temporary scenes are not mistaken for production targets.
+**Current focus:** Chapter One story-quality gate. Expansion beyond this chapter and final panel production are paused until every major choice has earned knowledge, visible custody, an understandable immediate cost, and a later payoff. Outside comprehension and timing tests remain required before story lock.
 
 Completed so far:
 
@@ -74,6 +74,11 @@ Completed so far:
 - [x] Confront Garren with the human cost of his former interrogation work and pay the choice off after reconvergence
 - [x] Clarify the shared opening through the first investigation choice for players without project context
 - [x] Separate Sella's binding bargain from passage actually kept and correct every ending consequence
+- [x] Remove Garren's premature knowledge of the flawed seal and give Tavin a physical credential before the first trust decision
+- [x] Give the clerk approach an earned destruction-clause payoff and gate public warrant destruction by actual access
+- [x] Make transfers of Orl's packet to Sella or Meret explicit player actions
+- [x] Gate Sella's crisis cooperation behind a surviving bargain and rewrite final route choices around actual custody
+- [x] Hide choices Garren has no fictional reason or ability to consider
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 - [ ] Complete a first-time comprehension pass for geography, character motives, evidence custody, political cause-and-effect, and choice stakes
@@ -192,6 +197,6 @@ These are not current work:
 
 ## Immediate next task
 
-**Establish the Chapter One art bible with a representative situation panel.**
+**Run a first-time-player Chapter One story test.**
 
-Define the permanent ink and charcoal treatment, grayscale range, camera distance, rain and fog behavior, severe checkpoint architecture, character-obscuring rules, and interface-safe composition. Prove those rules with one clean environment-first panel for an existing locked situation, without embedded text or generating the full Chapter One set. Story expansion remains paused during the demo-fidelity pass.
+Use players who have not read the project documents. Record their route, completion time, interpretation of every major choice, understanding of the evidence chain and political danger, and which character they trusted or distrusted. Repair repeated confusion and weak consequence payoffs before declaring story lock or producing final panels.
