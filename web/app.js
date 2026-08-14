@@ -43,8 +43,10 @@ function canChoose(choice) {
 }
 
 function nodeText(node) {
+  const summaryGroups = chapter.ending_summary_groups?.[node.id];
   const rememberedText = (node.conditional_text || [])
-    .filter(canChoose)
+    .filter((fragment) => canChoose(fragment)
+      && (!summaryGroups || summaryGroups.includes(fragment.group)))
     .map(({ text }) => text);
   return [node.text, ...rememberedText]
     .map((text, index) => `<p class="text${index === 0 ? "" : " remembered"}">${text}</p>`)
@@ -105,7 +107,8 @@ function render() {
     ["extra-large", "Extra large"],
   ].map(([value, label]) => `<option value="${value}" ${preferences.textSize === value ? "selected" : ""}>${label}</option>`).join("");
   // CSS resolves image URLs relative to web/styles.css, hence the parent path.
-  const artPath = node.panel_image || "../assets/panels/checkpoint-rain-v1.png";
+  const artPath = node.panel_image || "../assets/panels/checkpoint-rain-v2.png";
+  const speaker = chapter.narration_nodes?.includes(node.id) ? "" : node.speaker;
   const choices = (node.choices || []).map((choice, index) => ({ choice, index }))
     .filter(({ choice }) => canChoose(choice))
     .map(({ choice, index }) => `<button class="choice" data-choice="${index}" type="button">${choice.text}</button>`)
@@ -126,7 +129,7 @@ function render() {
       <div class="story-content">
         ${ending ? `<section class="ending" aria-label="Ending"><h1>${node.ending}</h1>` : ""}
         <article class="dialogue">
-          <p class="speaker">${node.speaker || "Narration"}</p>
+          <p class="speaker">${speaker || "Narration"}</p>
           ${nodeText(node)}
         </article>
         ${ending

@@ -3,7 +3,7 @@ import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
-const defaultPanelReference = "../assets/panels/checkpoint-rain-v1.png";
+const defaultPanelReference = "../assets/panels/checkpoint-rain-v2.png";
 const maximumRuntimeStates = 50_000;
 
 function isPlainObject(value) {

@@ -9,7 +9,7 @@
     },
     "clerk_order_copy": {
       "type": "boolean",
-      "description": "Whether Garren stole the clerk's discarded carbon copy, giving him earned access to the warrant's destruction clause."
+      "description": "Whether Garren stole the discarded pressure-sheet made beneath Meret's warrant, giving him earned access to its concealed destruction clause without possession of the warrant itself."
     },
     "investigation_route": {
       "type": "enum",

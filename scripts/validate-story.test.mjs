@@ -540,7 +540,7 @@ test("Chapter One shared opening explains its people, evidence, and immediate st
   assert.match(opening.text, /wants to cross without attention/);
   assert.match(opening.text, /Captain Orl, an officer from his regiment/);
   assert.match(opening.text, /Crown deliberately sacrificed their men at Red Hollow/);
-  assert.match(tavin.text, /kept the signal fires at Red Hollow/);
+  assert.match(tavin.text, /kept Red Hollow's beacon/);
   assert.match(tavin.text, /Crown calls me a deserter because I ran/);
   assert.deepEqual(
     new Set(tavin.choices.map(({ text }) => text)),
@@ -580,9 +580,15 @@ test("Chapter One shared opening explains its people, evidence, and immediate st
 
   assert.match(lockdown.text, /names three targets/);
   assert.match(lockdown.text, /Tavin, Orl's packet, and the regiment's old supply ledgers/);
-  assert.match(searchTable.text, /pressure-copy—the faint duplicate/);
-  assert.match(searchTable.text, /refusing Garren's regiment permission to retreat/);
-  assert.match(searchTable.text, /choose whom or what to investigate first/);
+  assert.match(searchTable.text, /faint pressure-copy of the order/);
+  assert.match(searchTable.text, /old order suggests preparation/);
+  assert.match(searchTable.text, /new warrant proves/);
+  assert.match(searchTable.text, /refused his regiment permission to retreat/);
+  assert.equal(searchTable.choices.length, 4);
+  assert(searchTable.choices.some(({ text }) => text.includes("altered supply books")));
+  assert(searchTable.choices.some(({ text }) => text.includes("hear Tavin")));
+  assert(searchTable.choices.some(({ text }) => text.includes("under Sella's canvas")));
+  assert(searchTable.choices.some(({ text }) => text.includes("on Meret's table")));
 });
 
 test("Chapter One makes the renewed-war pressure concrete before investigation", async () => {
@@ -594,8 +600,8 @@ test("Chapter One makes the renewed-war pressure concrete before investigation",
   assert(pressureBeat, "The world-pressure scene must exist.");
   assert(lockdown.choices.every(({ next }) => next === pressureBeat.id));
   assert.match(pressureBeat.text, /Chancellor/);
-  assert.match(pressureBeat.text, /refugee families from Bracken lands/);
-  assert.match(pressureBeat.text, /march their soldiers within a day/);
+  assert.match(pressureBeat.text, /families from the Bracken lands/);
+  assert.match(pressureBeat.text, /march within a day/);
   assert.match(pressureBeat.text, /hostages/);
   assert.match(pressureBeat.panel_description, /reprisal roll/);
   assert.deepEqual(
@@ -609,7 +615,7 @@ test("Chapter One pays off the clerk approach and gates public warrant destructi
   const { chapter } = await loadChapterOne();
   const nodes = new Map(chapter.nodes.map((storyNode) => [storyNode.id, storyNode]));
   const overlook = nodes.get("ch01_muddy_overlook");
-  const clerkChoice = overlook.choices.find(({ text }) => text.includes("carbon copy"));
+  const clerkChoice = overlook.choices.find(({ text }) => text.includes("pressure-sheet"));
   assert.equal(clerkChoice.effects.clerk_order_copy, true);
 
   const lockdown = nodes.get("ch01_bell_and_bar");
@@ -618,10 +624,30 @@ test("Chapter One pays off the clerk approach and gates public warrant destructi
   ));
 
   const crisis = nodes.get("ch01_clear_the_road");
-  const publicDestruction = crisis.choices.find(({ next }) => next === "ch01_clear_the_road_warrant");
-  assert(choiceIsAvailable(publicDestruction, { clerk_order_copy: true, search_warrant_status: "unseen" }));
-  assert(!choiceIsAvailable(publicDestruction, { clerk_order_copy: false, search_warrant_status: "unseen" }));
-  assert(choiceIsAvailable(publicDestruction, { clerk_order_copy: false, search_warrant_status: "copied" }));
+  const pressureSheetDestruction = crisis.choices.find(
+    ({ next }) => next === "ch01_clear_the_road_pressure_sheet",
+  );
+  const warrantDestruction = crisis.choices.find(
+    ({ next }) => next === "ch01_clear_the_road_warrant",
+  );
+  assert(choiceIsAvailable(pressureSheetDestruction, {
+    clerk_order_copy: true,
+    search_warrant_status: "unseen",
+  }));
+  assert(!choiceIsAvailable(pressureSheetDestruction, {
+    clerk_order_copy: false,
+    search_warrant_status: "unseen",
+  }));
+  assert(!choiceIsAvailable(warrantDestruction, {
+    clerk_order_copy: true,
+    search_warrant_status: "unseen",
+  }));
+  assert(choiceIsAvailable(warrantDestruction, {
+    clerk_order_copy: false,
+    search_warrant_status: "copied",
+  }));
+  assert.equal(pressureSheetDestruction.effects.search_warrant_status, undefined);
+  assert.equal(warrantDestruction.effects.search_warrant_status, "repudiated");
 });
 
 test("Chapter One confronts Garren with the cost of his interrogation work", async () => {
@@ -635,7 +661,7 @@ test("Chapter One confronts Garren with the cost of his interrogation work", asy
   assert.match(reckoning.text, /two nights/);
   assert.match(reckoning.text, /brother/);
   assert.match(reckoning.text, /daughter/);
-  assert.match(reckoning.text, /Bracken hostage list/);
+  assert.match(reckoning.text, /Bracken hostages/);
   assert.match(reckoning.text, /open a door/);
   assert.deepEqual(
     new Set(reckoning.choices.map(({ effects }) => effects.interrogation_response)),
@@ -775,6 +801,7 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
     "ch01_clear_the_road_meret",
     "ch01_clear_the_road_tavin",
     "ch01_clear_the_road_sella",
+    "ch01_clear_the_road_pressure_sheet",
     "ch01_clear_the_road_warrant",
   ]) {
     const outcomeNode = chapter.nodes.find(({ id }) => id === outcomeId);
@@ -784,6 +811,40 @@ test("Chapter One crisis preserves custody and pays a remembered civilian cost",
       );
       assert.equal(aftermathFragments.length, 1, `${outcomeId} needs one reprisal aftermath.`);
     }
+  }
+});
+
+test("Chapter One closing panels show the player's material branch", async () => {
+  const { chapter } = await loadChapterOne();
+  const expectedVariants = new Map([
+    ["ch01_three_hands", 5],
+    ["ch01_clear_the_road", 3],
+    ["ch01_open_gate_oath", 4],
+  ]);
+
+  for (const [nodeId, count] of expectedVariants) {
+    const variants = chapter.panel_variants[nodeId];
+    assert.equal(variants.length, count, `${nodeId} must have ${count} visual variants.`);
+    for (const variant of variants) {
+      assert(variant.description.length > 60, `${nodeId} has an underwritten visual brief.`);
+      assert(variant.requires || variant.requires_any, `${nodeId} has an ungated visual variant.`);
+    }
+  }
+
+  for (const nodeId of [
+    "ch01_three_hands_records",
+    "ch01_three_hands_witness",
+    "ch01_three_hands_merchant",
+    "ch01_three_hands_authority",
+    "ch01_three_hands",
+    "ch01_clear_the_road_meret",
+    "ch01_clear_the_road_tavin",
+    "ch01_clear_the_road_sella",
+    "ch01_clear_the_road_pressure_sheet",
+    "ch01_clear_the_road_warrant",
+    "ch01_open_gate_oath",
+  ]) {
+    assert(chapter.narration_nodes.includes(nodeId), `${nodeId} must render as narration.`);
   }
 });
 
@@ -879,6 +940,13 @@ test("Chapter One final oath gates custodians without removing the fire ending",
       groups: new Set(["evidence_custody", "testimony", "sella_terms", "tavin_fate", "civilian_cost"]),
     }],
   ]);
+  const expectedSummaries = new Map([
+    ["ch01_ending_quiet_record", ["evidence_custody", "tavin_fate", "civilian_cost"]],
+    ["ch01_ending_debt_in_rain", ["evidence_custody", "testimony", "civilian_cost"]],
+    ["ch01_ending_merchants_price", ["evidence_custody", "sella_terms", "civilian_cost"]],
+    ["ch01_ending_fire_keeps", ["evidence_custody", "tavin_fate", "civilian_cost"]],
+  ]);
+  assert.deepEqual(new Map(Object.entries(chapter.ending_summary_groups)), expectedSummaries);
   const checkedEndingStates = new Set();
 
   for (const values of oathArrivals) {
@@ -938,6 +1006,14 @@ test("Chapter One final oath gates custodians without removing the fire ending",
 
       const matchedFragments = endingNode.conditional_text.filter(
         (fragment) => choiceIsAvailable(fragment, endingValues),
+      );
+      const displayedFragments = matchedFragments.filter(
+        ({ group }) => chapter.ending_summary_groups[choice.next].includes(group),
+      );
+      assert.equal(displayedFragments.length, 3, `${choice.next} must show three concise consequences.`);
+      assert.deepEqual(
+        new Set(displayedFragments.map(({ group }) => group)),
+        new Set(chapter.ending_summary_groups[choice.next]),
       );
       const groupCounts = matchedFragments.reduce((counts, { group }) => {
         counts.set(group, (counts.get(group) || 0) + 1);

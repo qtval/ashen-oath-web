@@ -11,14 +11,16 @@ The first editorial correction pass repaired several issues found after the orig
 
 - Garren no longer identifies Meret's flawed seal before opening Orl's packet.
 - Tavin presents a scorched Red Hollow signal token before asking Garren for protection.
-- The clerk approach now earns a stolen carbon copy of the concealed destruction clause and can unlock public exposure during the crisis.
+- The clerk approach now earns the discarded pressure-sheet made beneath Meret's warrant and can unlock public exposure during the crisis.
 - Moving Orl's packet into Sella's or Meret's custody is now stated directly in the player's investigation choice.
 - Sella's wagon breakthrough requires a surviving bargain; it is no longer available after Garren refuses or breaks her terms.
-- Public destruction of the warrant requires actual access to the warrant or the stolen carbon copy.
+- Public destruction now distinguishes the stolen pressure-sheet from Meret's actual warrant; only tearing the warrant repudiates its counterseal.
 - Final route choices now describe joining the custodian's road rather than implying Garren personally holds every part of the case.
 - Choices unavailable to Garren are hidden instead of exposing unexplained locked alternatives.
 
 The graph and regression suite pass after these corrections. This does not close the audit: outside comprehension, choice-reasoning, and timing tests are still required, and final panels remain blocked on story lock.
+
+The second first-player pass also shortens exposition-heavy scenes, renders third-person passages as narration instead of misattributed dialogue, limits each ending screen to three decisive remembered consequences, adds state-specific briefs for the evidence handoff, crisis, and open-gate oath, and replaces the contaminated placeholder artwork with a clean environment-first checkpoint panel.
 
 ## Method
 
@@ -55,7 +57,7 @@ Even the cautious first-read model remains around 9.5-10.3 minutes. Scene transi
 - Scene 13 always charges a civilian cost.
 - The four endings state compromises rather than victory or defeat and correctly retain multiple categories of remembered state.
 - All representative routes completed in the live browser without console errors.
-- All 40 nodes have distinct environmental panel descriptions, although they still use one shared placeholder image.
+- All 43 nodes have distinct environmental panel descriptions, with state variants for the three most consequential reconvergences. They still share one clean atmospheric placeholder image.
 
 ## Priority findings
 
@@ -143,6 +145,8 @@ Scene 13 has distinct outcome briefs for detained refugees, the culvert escape, 
 
 **Required correction:** create conditional Scene 14 panel briefs, or four panel variants, before the shot list is locked.
 
+**Resolved:** Scene 14 now has four state-specific briefs that retain detained refugees, the punished soldier, injured refugees, or the gate riot in the composition. The evidence handoff and crisis also have branch-aware briefs.
+
 #### 10. World context remains too thin for the requested inhabitable setting
 
 The chapter needs concise context for the refugees, the Crown's checkpoint powers, Orl's importance to Garren, and the political mechanism by which Red Hollow could restart war. Context should arrive through material conditions, overheard orders, documents, and character needs rather than encyclopedia narration.
@@ -167,9 +171,9 @@ Meret's guilt, self-deception, and institutional compromise land well. The clerk
 
 ## Panel readiness
 
-- Distinct panel briefs: 42
+- Distinct panel briefs: 43, plus 12 material state variants
 - Explicit final panel images: 0
-- Current image treatment: one shared atmospheric placeholder
+- Current image treatment: one shared clean atmospheric placeholder
 - Shot-list readiness: blocked by the remaining P0 pacing work and P1 story corrections
 
 Do not commission or generate the complete panel set yet. Pacing expansion and conditional crisis/open-gate variants may add, remove, or split situations. After those are locked, convert every surviving node and material state variant into the permanent shot list requested by the project owner.

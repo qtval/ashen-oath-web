@@ -79,6 +79,11 @@ Completed so far:
 - [x] Make transfers of Orl's packet to Sella or Meret explicit player actions
 - [x] Gate Sella's crisis cooperation behind a surviving bargain and rewrite final route choices around actual custody
 - [x] Hide choices Garren has no fictional reason or ability to consider
+- [x] Separate the stolen pressure-sheet from Meret's sealed warrant in prose, state effects, and crisis outcomes
+- [x] Reclassify third-person scene summaries as narration and tighten exposition for a first-time player
+- [x] Limit ending screens to three decisive consequence summaries while retaining full state in the Chronicle
+- [x] Add branch-aware panel briefs for evidence custody, the checkpoint crisis, and the open-gate aftermath
+- [x] Replace the shared visual reference with a clean environment-first monochrome checkpoint panel
 - [ ] Expand purposeful Chapter One situations until outside timing reaches 20-30 minutes
 - [ ] Pay off route intel, relationships, promises, and civilian pressure before story lock
 - [ ] Complete a first-time comprehension pass for geography, character motives, evidence custody, political cause-and-effect, and choice stakes
